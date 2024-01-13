@@ -59,10 +59,22 @@ class CentralProcessingUnit {
             val operand2 = memory[pc.inc().inc().toInt()]
             when (opCode.toInt()) {
                 0x10 -> { bpl(operand1) }
+
                 0x88 -> { dey() }
+
                 0x99 -> { sta_absolute_indexed(operand1, operand2, memory) }
+
                 0xA0 -> { ldy_immediate(operand1) }
+                0xA1 -> { lda_indexed_indirect_x(operand1, memory) }
+                0xA5 -> { lda_zero_page(operand1, memory) }
                 0xA9 -> { lda_immediate(operand1) }
+                0xAD -> { lda_absolute(operand1, operand2, memory) }
+
+                0xB1 -> { lda_indirect_indexed_y(operand1, memory) }
+                0xB5 -> { lda_zero_page_x(operand1, memory) }
+                0xBD -> { lda_absolute_x(operand1, operand2, memory) }
+                0xB9 -> { lda_absolute_y(operand1, operand2, memory) }
+
                 else -> { println("Not yet implemented, or not an existing OPCode!")}
             }
         }
@@ -86,32 +98,96 @@ class CentralProcessingUnit {
         acc = param
         N = (acc and 128u > 0u)
         Z = (acc.compareTo(0u) == 0)
-        pc = pc.inc()
-        pc = pc.inc()
+        pc = pc.inc().inc()
     }
 
-    private fun lda_zero_page() {
-        TODO()
+    private fun lda_zero_page(param: UByte, memory: Array<UByte>) {
+        val operand = param.toString(16).uppercase(Locale.getDefault()).padStart(2, '0')
+        println("LDA \$$operand")
+
+        acc = memory[param.toInt()]
+        N = (acc and 128u > 0u)
+        Z = (acc.compareTo(0u) == 0)
+        pc = pc.inc().inc()
     }
 
-    private fun lda_zero_page_x(param: UByte) {
-        TODO()
+    private fun lda_zero_page_x(param: UByte, memory: Array<UByte>) {
+        val operand = param.toString(16).uppercase(Locale.getDefault()).padStart(2, '0')
+        println("LDA \$$operand, X")
+
+        val newIndex = (param + x).toUByte() // Conversion to UByte, effectively the same as giving a "modulo 256".
+        acc = memory[newIndex.toInt()]
+
+        N = (acc and 128u > 0u)
+        Z = (acc.compareTo(0u) == 0)
+        pc = pc.inc().inc()
     }
 
-    private fun lda_absolute_x(lsb: UByte, msb: UByte) {
-        TODO()
+    private fun lda_absolute(lsb: UByte, msb: UByte, memory: Array<UByte>) {
+        val lsbHex = lsb.toString(16).uppercase(Locale.getDefault()).padStart(2, '0')
+        val msbHex = msb.toString(16).uppercase(Locale.getDefault()).padStart(2, '0')
+        println("LDA \$$msbHex$lsbHex")
+
+        val location = 256 * msb.toShort() + lsb.toShort()
+        acc = memory[location]
+        N = (acc and 128u > 0u)
+        Z = (acc.compareTo(0u) == 0)
+        pc = pc.inc().inc().inc()
     }
 
-    private fun lda_absolute_y(lsb: UByte, msb: UByte) {
-        TODO()
+    private fun lda_absolute_x(lsb: UByte, msb: UByte, memory: Array<UByte>) {
+        val lsbHex = lsb.toString(16).uppercase(Locale.getDefault()).padStart(2, '0')
+        val msbHex = msb.toString(16).uppercase(Locale.getDefault()).padStart(2, '0')
+        print("LDA \$$msbHex$lsbHex,X")
+
+        val location = (256 * msb.toShort() + lsb.toShort() + x.toShort()).toShort() // Conversion to short should be the same as "mod 65536".
+        acc = memory[location.toInt()]
+
+        N = (acc and 128u > 0u)
+        Z = (acc.compareTo(0u) == 0)
+        pc = pc.inc().inc().inc()
     }
 
-    private fun lda_indirect_x(param: UByte) {
-        TODO()
+    private fun lda_absolute_y(lsb: UByte, msb: UByte, memory: Array<UByte>) {
+        val lsbHex = lsb.toString(16).uppercase(Locale.getDefault()).padStart(2, '0')
+        val msbHex = msb.toString(16).uppercase(Locale.getDefault()).padStart(2, '0')
+        print("LDA \$$msbHex$lsbHex,Y")
+
+        val location = (256 * msb.toShort() + lsb.toShort() + y.toShort()).toShort() // Conversion to short should be the same as "mod 65536".
+        acc = memory[location.toInt()]
+
+        N = (acc and 128u > 0u)
+        Z = (acc.compareTo(0u) == 0)
+        pc = pc.inc().inc().inc()
     }
 
-    private fun lda_indirect_y(param: UByte) {
-        TODO()
+    private fun lda_indexed_indirect_x(param: UByte, memory: Array<UByte>) {
+        val operand = param.toString(16).uppercase(Locale.getDefault()).padStart(2, '0')
+        println("LDA \$($operand, X)")
+
+        val location1 = (param + x).toUByte()
+        val zeroPageValueLsb = memory[location1.toInt()]
+        val zeroPageValueMsb = memory[location1.toInt().inc()]
+        val location2 = (256u * zeroPageValueMsb.toUShort() + zeroPageValueLsb.toUShort()).toUShort()
+        acc = memory[location2.toInt()]
+
+        N = (acc and 128u > 0u)
+        Z = (acc.compareTo(0u) == 0)
+        pc = pc.inc().inc()
+    }
+
+    private fun lda_indirect_indexed_y(param: UByte, memory: Array<UByte>) {
+        val operand = param.toString(16).uppercase(Locale.getDefault()).padStart(2, '0')
+        println("LDA $($operand),Y")
+
+        val zeroPageValueLsb = memory[param.toInt()]
+        val zeroPageValueMsb = memory[(param.inc()).toInt()]
+        val location = (256u * zeroPageValueMsb + zeroPageValueLsb + y).toUShort()
+        acc = memory[location.toInt()]
+
+        N = (acc and 128u > 0u)
+        Z = (acc.compareTo(0u) == 0)
+        pc = pc.inc().inc()
     }
 
     // End LDA
@@ -122,8 +198,6 @@ class CentralProcessingUnit {
         println("STA \$$msbHex$lsbHex, Y")
 
         val location = 256 * msb.toShort() + lsb.toShort()
-        println("...location==$location")
-        println("...msb==$msb lsb==$lsb")
         memory[location] = acc
         pc = pc.inc()
         pc = pc.inc()
