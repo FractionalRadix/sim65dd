@@ -42,7 +42,7 @@ class CentralProcessingUnit {
     var x: UByte = 0u
     var y: UByte = 0u
     var pc: UShort = 0u
-    var sp: UByte = 255u //  UByte.MAX_VALUE
+    private var sp: UByte = 255u //  UByte.MAX_VALUE
 
     var N: Boolean = false
     var Z: Boolean = false
@@ -60,20 +60,26 @@ class CentralProcessingUnit {
             when (opCode.toInt()) {
                 0x10 -> { bpl(operand1) }
 
+                0x81 -> { LoadStoreAccumulator().staIndexedIndirectX(this, operand1, memory) }
+                0x85 -> { LoadStoreAccumulator().staZeroPage(this, operand1, memory) }
                 0x88 -> { dey() }
+                0x8D -> { LoadStoreAccumulator().staAbsolute(this, operand1, operand2, memory) }
 
-                0x99 -> { sta_absolute_indexed(operand1, operand2, memory) }
+                0x91 -> { LoadStoreAccumulator().staIndirectIndexedY(this, operand1, memory) }
+                0x95 -> { LoadStoreAccumulator().staZeroPageX(this, operand1, memory) }
+                0x99 -> { LoadStoreAccumulator().staAbsoluteY(this, operand1, operand2, memory) }
+                0x9D -> { LoadStoreAccumulator().staAbsoluteX(this, operand1, operand2, memory) }
 
                 0xA0 -> { ldy_immediate(operand1) }
-                0xA1 -> { lda_indexed_indirect_x(operand1, memory) }
-                0xA5 -> { lda_zero_page(operand1, memory) }
-                0xA9 -> { lda_immediate(operand1) }
-                0xAD -> { lda_absolute(operand1, operand2, memory) }
+                0xA1 -> { LoadStoreAccumulator().ldaIndexedIndirectX(this, operand1, memory) }
+                0xA5 -> { LoadStoreAccumulator().ldaZeroPage(this, operand1, memory) }
+                0xA9 -> { LoadStoreAccumulator().ldaImmediate(this, operand1) }
+                0xAD -> { LoadStoreAccumulator().lda_absolute(this, operand1, operand2, memory) }
 
-                0xB1 -> { lda_indirect_indexed_y(operand1, memory) }
-                0xB5 -> { lda_zero_page_x(operand1, memory) }
-                0xBD -> { lda_absolute_x(operand1, operand2, memory) }
-                0xB9 -> { lda_absolute_y(operand1, operand2, memory) }
+                0xB1 -> { LoadStoreAccumulator().ldaIndirectIndexedY(this, operand1, memory) }
+                0xB5 -> { LoadStoreAccumulator().ldaZeroPageX(this, operand1, memory) }
+                0xB9 -> { LoadStoreAccumulator().ldaAbsoluteY(this, operand1, operand2, memory) }
+                0xBD -> { LoadStoreAccumulator().ldaAbsoluteX(this, operand1, operand2, memory) }
 
                 else -> { println("Not yet implemented, or not an existing OPCode!")}
             }
@@ -86,124 +92,6 @@ class CentralProcessingUnit {
         }
 
     }
-
-    // Load/Store operations
-
-    // LDA
-
-    private fun lda_immediate(param: UByte) {
-        val operand = param.toString(16).uppercase(Locale.getDefault()).padStart(2, '0')
-        println("LDA #\$$operand")
-
-        acc = param
-        N = (acc and 128u > 0u)
-        Z = (acc.compareTo(0u) == 0)
-        pc = pc.inc().inc()
-    }
-
-    private fun lda_zero_page(param: UByte, memory: Array<UByte>) {
-        val operand = param.toString(16).uppercase(Locale.getDefault()).padStart(2, '0')
-        println("LDA \$$operand")
-
-        acc = memory[param.toInt()]
-        N = (acc and 128u > 0u)
-        Z = (acc.compareTo(0u) == 0)
-        pc = pc.inc().inc()
-    }
-
-    private fun lda_zero_page_x(param: UByte, memory: Array<UByte>) {
-        val operand = param.toString(16).uppercase(Locale.getDefault()).padStart(2, '0')
-        println("LDA \$$operand, X")
-
-        val newIndex = (param + x).toUByte() // Conversion to UByte, effectively the same as giving a "modulo 256".
-        acc = memory[newIndex.toInt()]
-
-        N = (acc and 128u > 0u)
-        Z = (acc.compareTo(0u) == 0)
-        pc = pc.inc().inc()
-    }
-
-    private fun lda_absolute(lsb: UByte, msb: UByte, memory: Array<UByte>) {
-        val lsbHex = lsb.toString(16).uppercase(Locale.getDefault()).padStart(2, '0')
-        val msbHex = msb.toString(16).uppercase(Locale.getDefault()).padStart(2, '0')
-        println("LDA \$$msbHex$lsbHex")
-
-        val location = 256 * msb.toShort() + lsb.toShort()
-        acc = memory[location]
-        N = (acc and 128u > 0u)
-        Z = (acc.compareTo(0u) == 0)
-        pc = pc.inc().inc().inc()
-    }
-
-    private fun lda_absolute_x(lsb: UByte, msb: UByte, memory: Array<UByte>) {
-        val lsbHex = lsb.toString(16).uppercase(Locale.getDefault()).padStart(2, '0')
-        val msbHex = msb.toString(16).uppercase(Locale.getDefault()).padStart(2, '0')
-        print("LDA \$$msbHex$lsbHex,X")
-
-        val location = (256 * msb.toShort() + lsb.toShort() + x.toShort()).toShort() // Conversion to short should be the same as "mod 65536".
-        acc = memory[location.toInt()]
-
-        N = (acc and 128u > 0u)
-        Z = (acc.compareTo(0u) == 0)
-        pc = pc.inc().inc().inc()
-    }
-
-    private fun lda_absolute_y(lsb: UByte, msb: UByte, memory: Array<UByte>) {
-        val lsbHex = lsb.toString(16).uppercase(Locale.getDefault()).padStart(2, '0')
-        val msbHex = msb.toString(16).uppercase(Locale.getDefault()).padStart(2, '0')
-        print("LDA \$$msbHex$lsbHex,Y")
-
-        val location = (256 * msb.toShort() + lsb.toShort() + y.toShort()).toShort() // Conversion to short should be the same as "mod 65536".
-        acc = memory[location.toInt()]
-
-        N = (acc and 128u > 0u)
-        Z = (acc.compareTo(0u) == 0)
-        pc = pc.inc().inc().inc()
-    }
-
-    private fun lda_indexed_indirect_x(param: UByte, memory: Array<UByte>) {
-        val operand = param.toString(16).uppercase(Locale.getDefault()).padStart(2, '0')
-        println("LDA \$($operand, X)")
-
-        val location1 = (param + x).toUByte()
-        val zeroPageValueLsb = memory[location1.toInt()]
-        val zeroPageValueMsb = memory[location1.toInt().inc()]
-        val location2 = (256u * zeroPageValueMsb.toUShort() + zeroPageValueLsb.toUShort()).toUShort()
-        acc = memory[location2.toInt()]
-
-        N = (acc and 128u > 0u)
-        Z = (acc.compareTo(0u) == 0)
-        pc = pc.inc().inc()
-    }
-
-    private fun lda_indirect_indexed_y(param: UByte, memory: Array<UByte>) {
-        val operand = param.toString(16).uppercase(Locale.getDefault()).padStart(2, '0')
-        println("LDA $($operand),Y")
-
-        val zeroPageValueLsb = memory[param.toInt()]
-        val zeroPageValueMsb = memory[(param.inc()).toInt()]
-        val location = (256u * zeroPageValueMsb + zeroPageValueLsb + y).toUShort()
-        acc = memory[location.toInt()]
-
-        N = (acc and 128u > 0u)
-        Z = (acc.compareTo(0u) == 0)
-        pc = pc.inc().inc()
-    }
-
-    // End LDA
-
-    private fun sta_absolute_indexed(lsb: UByte, msb: UByte, memory: Array<UByte>) {
-        val lsbHex = lsb.toString(16).uppercase(Locale.getDefault()).padStart(2, '0')
-        val msbHex = msb.toString(16).uppercase(Locale.getDefault()).padStart(2, '0')
-        println("STA \$$msbHex$lsbHex, Y")
-
-        val location = 256 * msb.toShort() + lsb.toShort()
-        memory[location] = acc
-        pc = pc.inc()
-        pc = pc.inc()
-        pc = pc.inc()
-    }
-
 
     private fun ldy_immediate(param: UByte) {
         val operand = param.toString(16).uppercase(Locale.getDefault()).padStart(2, '0')
@@ -270,7 +158,7 @@ class CentralProcessingUnit {
     //TODO?~ Use a Map from OPCodes to Instruction?
     fun instructionSet(): List<Instruction> {
         val instructionSet = mutableListOf<Instruction>()
-        instructionSet.add(Instruction(0xA9.toUByte(), "LDA", ::lda_immediate, 2, false))
+        //instructionSet.add(Instruction(0xA9.toUByte(), "LDA", ::lda_immediate, 2, false))
         instructionSet.add(Instruction(0xA0.toUByte(), "LDY", ::ldy_immediate, 2, false))
         //TODO!+ val iny = Instruction(0xC8.toUByte(), "INY", ::iny) ... etc
         return instructionSet
