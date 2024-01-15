@@ -14,7 +14,7 @@ class LoadStoreAccumulator {
         cpu.pc = cpu.pc.inc().inc()
     }
 
-    fun ldaZeroPage(cpu: CentralProcessingUnit, param: UByte, memory: Array<UByte>) {
+    fun ldaZeroPage(cpu: CentralProcessingUnit, memory: Array<UByte>, param: UByte) {
         val operand = param.toString(16).uppercase(Locale.getDefault()).padStart(2, '0')
         println("LDA \$$operand")
 
@@ -24,7 +24,7 @@ class LoadStoreAccumulator {
         cpu.pc = cpu.pc.inc().inc()
     }
 
-    fun staZeroPage(cpu: CentralProcessingUnit, param: UByte, memory: Array<UByte>) {
+    fun staZeroPage(cpu: CentralProcessingUnit, memory: Array<UByte>, param: UByte) {
         val operand = param.toString(16).uppercase(Locale.getDefault()).padStart(2, '0')
         println("STA \$$operand")
 
@@ -32,7 +32,7 @@ class LoadStoreAccumulator {
         cpu.pc = cpu.pc.inc().inc()
     }
 
-    fun ldaZeroPageX(cpu: CentralProcessingUnit, param: UByte, memory: Array<UByte>) {
+    fun ldaZeroPageX(cpu: CentralProcessingUnit, memory: Array<UByte>, param: UByte) {
         val operand = param.toString(16).uppercase(Locale.getDefault()).padStart(2, '0')
         println("LDA \$$operand, X")
 
@@ -44,7 +44,7 @@ class LoadStoreAccumulator {
         cpu.pc = cpu.pc.inc().inc()
     }
 
-    fun staZeroPageX(cpu: CentralProcessingUnit, param: UByte, memory: Array<UByte>) {
+    fun staZeroPageX(cpu: CentralProcessingUnit, memory: Array<UByte>, param: UByte) {
         val operand = param.toString(16).uppercase(Locale.getDefault()).padStart(2, '0')
         println("STA \$$operand, X")
 
@@ -54,7 +54,7 @@ class LoadStoreAccumulator {
         cpu.pc = cpu.pc.inc().inc()
     }
 
-    fun lda_absolute(cpu: CentralProcessingUnit, lsb: UByte, msb: UByte, memory: Array<UByte>) {
+    fun ldaAbsolute(cpu: CentralProcessingUnit, memory: Array<UByte>, lsb: UByte, msb: UByte) {
         val lsbHex = lsb.toString(16).uppercase(Locale.getDefault()).padStart(2, '0')
         val msbHex = msb.toString(16).uppercase(Locale.getDefault()).padStart(2, '0')
         println("LDA \$$msbHex$lsbHex")
@@ -66,7 +66,7 @@ class LoadStoreAccumulator {
         cpu.pc = cpu.pc.inc().inc().inc()
     }
 
-    fun staAbsolute(cpu: CentralProcessingUnit, lsb: UByte, msb: UByte, memory: Array<UByte>) {
+    fun staAbsolute(cpu: CentralProcessingUnit, memory: Array<UByte>, lsb: UByte, msb: UByte) {
         val lsbHex = lsb.toString(16).uppercase(Locale.getDefault()).padStart(2, '0')
         val msbHex = msb.toString(16).uppercase(Locale.getDefault()).padStart(2, '0')
         println("STA \$$msbHex$lsbHex")
@@ -76,7 +76,7 @@ class LoadStoreAccumulator {
         cpu.pc = cpu.pc.inc().inc().inc()
     }
 
-    fun ldaAbsoluteX(cpu: CentralProcessingUnit, lsb: UByte, msb: UByte, memory: Array<UByte>) {
+    fun ldaAbsoluteX(cpu: CentralProcessingUnit, memory: Array<UByte>, lsb: UByte, msb: UByte) {
         val lsbHex = lsb.toString(16).uppercase(Locale.getDefault()).padStart(2, '0')
         val msbHex = msb.toString(16).uppercase(Locale.getDefault()).padStart(2, '0')
         print("LDA \$$msbHex$lsbHex,X")
@@ -89,7 +89,7 @@ class LoadStoreAccumulator {
         cpu.pc = cpu.pc.inc().inc().inc()
     }
 
-    fun staAbsoluteX(cpu: CentralProcessingUnit, lsb: UByte, msb: UByte, memory: Array<UByte>) {
+    fun staAbsoluteX(cpu: CentralProcessingUnit, memory: Array<UByte>, lsb: UByte, msb: UByte) {
         val lsbHex = lsb.toString(16).uppercase(Locale.getDefault()).padStart(2, '0')
         val msbHex = msb.toString(16).uppercase(Locale.getDefault()).padStart(2, '0')
         print("STA \$$msbHex$lsbHex,X")
@@ -100,7 +100,7 @@ class LoadStoreAccumulator {
         cpu.pc = cpu.pc.inc().inc().inc()
     }
 
-    fun ldaAbsoluteY(cpu: CentralProcessingUnit, lsb: UByte, msb: UByte, memory: Array<UByte>) {
+    fun ldaAbsoluteY(cpu: CentralProcessingUnit, memory: Array<UByte>, lsb: UByte, msb: UByte) {
         val lsbHex = lsb.toString(16).uppercase(Locale.getDefault()).padStart(2, '0')
         val msbHex = msb.toString(16).uppercase(Locale.getDefault()).padStart(2, '0')
         print("LDA \$$msbHex$lsbHex,Y")
@@ -113,7 +113,7 @@ class LoadStoreAccumulator {
         cpu.pc = cpu.pc.inc().inc().inc()
     }
 
-    fun staAbsoluteY(cpu: CentralProcessingUnit, lsb: UByte, msb: UByte, memory: Array<UByte>) {
+    fun staAbsoluteY(cpu: CentralProcessingUnit, memory: Array<UByte>, lsb: UByte, msb: UByte) {
         val lsbHex = lsb.toString(16).uppercase(Locale.getDefault()).padStart(2, '0')
         val msbHex = msb.toString(16).uppercase(Locale.getDefault()).padStart(2, '0')
         println("STA \$$msbHex$lsbHex, Y")
@@ -123,7 +123,7 @@ class LoadStoreAccumulator {
         cpu.pc = cpu.pc.inc().inc().inc()
     }
 
-    fun ldaIndexedIndirectX(cpu: CentralProcessingUnit, param: UByte, memory: Array<UByte>) {
+    fun ldaIndexedIndirectX(cpu: CentralProcessingUnit, memory: Array<UByte>, param: UByte) {
         val operand = param.toString(16).uppercase(Locale.getDefault()).padStart(2, '0')
         println("LDA \$($operand, X)")
 
@@ -138,7 +138,7 @@ class LoadStoreAccumulator {
         cpu.pc = cpu.pc.inc().inc()
     }
 
-    fun staIndexedIndirectX(cpu: CentralProcessingUnit, param: UByte, memory: Array<UByte>) {
+    fun staIndexedIndirectX(cpu: CentralProcessingUnit, memory: Array<UByte>, param: UByte) {
         val operand = param.toString(16).uppercase(Locale.getDefault()).padStart(2, '0')
         println("STA \$($operand, X)")
 
@@ -151,7 +151,7 @@ class LoadStoreAccumulator {
         cpu.pc = cpu.pc.inc().inc()
     }
 
-    fun ldaIndirectIndexedY(cpu: CentralProcessingUnit, param: UByte, memory: Array<UByte>) {
+    fun ldaIndirectIndexedY(cpu: CentralProcessingUnit, memory: Array<UByte>, param: UByte) {
         val operand = param.toString(16).uppercase(Locale.getDefault()).padStart(2, '0')
         println("LDA $($operand),Y")
 
@@ -165,7 +165,7 @@ class LoadStoreAccumulator {
         cpu.pc = cpu.pc.inc().inc()
     }
 
-    fun staIndirectIndexedY(cpu: CentralProcessingUnit, param: UByte, memory: Array<UByte>) {
+    fun staIndirectIndexedY(cpu: CentralProcessingUnit, memory: Array<UByte>, param: UByte) {
         val operand = param.toString(16).uppercase(Locale.getDefault()).padStart(2, '0')
         println("STA $($operand),Y")
 

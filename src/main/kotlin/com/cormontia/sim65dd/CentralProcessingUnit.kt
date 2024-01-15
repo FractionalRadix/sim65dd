@@ -60,26 +60,31 @@ class CentralProcessingUnit {
             when (opCode.toInt()) {
                 0x10 -> { bpl(operand1) }
 
-                0x81 -> { LoadStoreAccumulator().staIndexedIndirectX(this, operand1, memory) }
-                0x85 -> { LoadStoreAccumulator().staZeroPage(this, operand1, memory) }
+                0x81 -> { LoadStoreAccumulator().staIndexedIndirectX(this, memory, operand1) }
+                0x85 -> { LoadStoreAccumulator().staZeroPage(this, memory, operand1) }
                 0x88 -> { dey() }
-                0x8D -> { LoadStoreAccumulator().staAbsolute(this, operand1, operand2, memory) }
+                0x8D -> { LoadStoreAccumulator().staAbsolute(this, memory, operand1, operand2) }
 
-                0x91 -> { LoadStoreAccumulator().staIndirectIndexedY(this, operand1, memory) }
-                0x95 -> { LoadStoreAccumulator().staZeroPageX(this, operand1, memory) }
-                0x99 -> { LoadStoreAccumulator().staAbsoluteY(this, operand1, operand2, memory) }
-                0x9D -> { LoadStoreAccumulator().staAbsoluteX(this, operand1, operand2, memory) }
+                0x91 -> { LoadStoreAccumulator().staIndirectIndexedY(this, memory, operand1) }
+                0x95 -> { LoadStoreAccumulator().staZeroPageX(this, memory, operand1) }
+                0x99 -> { LoadStoreAccumulator().staAbsoluteY(this, memory, operand1, operand2) }
+                0x9D -> { LoadStoreAccumulator().staAbsoluteX(this, memory, operand1, operand2) }
 
                 0xA0 -> { ldy_immediate(operand1) }
-                0xA1 -> { LoadStoreAccumulator().ldaIndexedIndirectX(this, operand1, memory) }
-                0xA5 -> { LoadStoreAccumulator().ldaZeroPage(this, operand1, memory) }
+                0xA1 -> { LoadStoreAccumulator().ldaIndexedIndirectX(this, memory, operand1) }
+                0xA2 -> { LoadStoreXRegister().ldxImmediate(this, operand1) }
+                0xA5 -> { LoadStoreAccumulator().ldaZeroPage(this, memory, operand1) }
+                0xA6 -> { LoadStoreXRegister().ldxZeroPage(this, memory, operand1) }
                 0xA9 -> { LoadStoreAccumulator().ldaImmediate(this, operand1) }
-                0xAD -> { LoadStoreAccumulator().lda_absolute(this, operand1, operand2, memory) }
+                0xAD -> { LoadStoreAccumulator().ldaAbsolute(this, memory, operand1, operand2) }
+                0xAE -> { LoadStoreXRegister().ldxAbsolute(this, memory, operand1, operand2) }
 
-                0xB1 -> { LoadStoreAccumulator().ldaIndirectIndexedY(this, operand1, memory) }
-                0xB5 -> { LoadStoreAccumulator().ldaZeroPageX(this, operand1, memory) }
-                0xB9 -> { LoadStoreAccumulator().ldaAbsoluteY(this, operand1, operand2, memory) }
-                0xBD -> { LoadStoreAccumulator().ldaAbsoluteX(this, operand1, operand2, memory) }
+                0xB1 -> { LoadStoreAccumulator().ldaIndirectIndexedY(this, memory, operand1) }
+                0xB5 -> { LoadStoreAccumulator().ldaZeroPageX(this, memory, operand1) }
+                0xB6 -> { LoadStoreXRegister().ldxZeroPageY(this, memory, operand1) }
+                0xB9 -> { LoadStoreAccumulator().ldaAbsoluteY(this, memory, operand1, operand2) }
+                0xBD -> { LoadStoreAccumulator().ldaAbsoluteX(this, memory, operand1, operand2) }
+                0xBE -> { LoadStoreXRegister().ldxAbsoluteY(this, memory, operand1, operand2) }
 
                 else -> { println("Not yet implemented, or not an existing OPCode!")}
             }
