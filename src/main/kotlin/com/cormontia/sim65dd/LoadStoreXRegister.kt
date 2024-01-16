@@ -40,7 +40,7 @@ class LoadStoreXRegister {
         val msbHex = msb.toString(16).uppercase(Locale.getDefault()).padStart(2, '0')
         println("LDX \$$msbHex$lsbHex")
 
-        val location = 256 * msb.toShort() + lsb.toShort()
+        val location = absolute(lsb, msb)
         cpu.x = memory[location]
         cpu.N = (cpu.acc and 128u > 0u)
         cpu.Z = (cpu.acc.compareTo(0u) == 0)
@@ -52,7 +52,7 @@ class LoadStoreXRegister {
         val msbHex = msb.toString(16).uppercase(Locale.getDefault()).padStart(2, '0')
         print("LDX \$$msbHex$lsbHex,Y")
 
-        val location = (256 * msb.toShort() + lsb.toShort() + cpu.y.toShort()).toShort() // Conversion to short should be the same as "mod 65536".
+        val location = absoluteY(cpu, lsb, msb)
         cpu.x = memory[location.toInt()]
 
         cpu.N = (cpu.acc and 128u > 0u)
@@ -83,7 +83,7 @@ class LoadStoreXRegister {
         val msbHex = msb.toString(16).uppercase(Locale.getDefault()).padStart(2, '0')
         println("STX \$$msbHex$lsbHex")
 
-        val location = 256 * msb.toShort() + lsb.toShort()
+        val location = absolute(lsb, msb)
         memory[location] = cpu.x
         cpu.pc = cpu.pc.inc().inc().inc()
     }

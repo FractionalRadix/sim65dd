@@ -59,7 +59,7 @@ class LoadStoreAccumulator {
         val msbHex = msb.toString(16).uppercase(Locale.getDefault()).padStart(2, '0')
         println("LDA \$$msbHex$lsbHex")
 
-        val location = 256 * msb.toShort() + lsb.toShort()
+        val location = absolute(lsb, msb)
         cpu.acc = memory[location]
         cpu.N = (cpu.acc and 128u > 0u)
         cpu.Z = (cpu.acc.compareTo(0u) == 0)
@@ -71,7 +71,7 @@ class LoadStoreAccumulator {
         val msbHex = msb.toString(16).uppercase(Locale.getDefault()).padStart(2, '0')
         println("STA \$$msbHex$lsbHex")
 
-        val location = 256 * msb.toShort() + lsb.toShort()
+        val location = absolute(lsb, msb)
         memory[location] = cpu.acc
         cpu.pc = cpu.pc.inc().inc().inc()
     }
@@ -81,7 +81,7 @@ class LoadStoreAccumulator {
         val msbHex = msb.toString(16).uppercase(Locale.getDefault()).padStart(2, '0')
         print("LDA \$$msbHex$lsbHex,X")
 
-        val location = (256 * msb.toShort() + lsb.toShort() + cpu.x.toShort()).toShort() // Conversion to short should be the same as "mod 65536".
+        val location = absoluteX(cpu, lsb, msb)
         cpu.acc = memory[location.toInt()]
 
         cpu.N = (cpu.acc and 128u > 0u)
@@ -94,7 +94,7 @@ class LoadStoreAccumulator {
         val msbHex = msb.toString(16).uppercase(Locale.getDefault()).padStart(2, '0')
         print("STA \$$msbHex$lsbHex,X")
 
-        val location = (256 * msb.toShort() + lsb.toShort() + cpu.x.toShort()).toShort() // Conversion to short should be the same as "mod 65536".
+        val location = absoluteY(cpu, lsb, msb)
         memory[location.toInt()] = cpu.acc
 
         cpu.pc = cpu.pc.inc().inc().inc()
@@ -105,7 +105,7 @@ class LoadStoreAccumulator {
         val msbHex = msb.toString(16).uppercase(Locale.getDefault()).padStart(2, '0')
         print("LDA \$$msbHex$lsbHex,Y")
 
-        val location = (256 * msb.toShort() + lsb.toShort() + cpu.y.toShort()).toShort() // Conversion to short should be the same as "mod 65536".
+        val location = absoluteY(cpu, lsb, msb)
         cpu.acc = memory[location.toInt()]
 
         cpu.N = (cpu.acc and 128u > 0u)
@@ -118,8 +118,8 @@ class LoadStoreAccumulator {
         val msbHex = msb.toString(16).uppercase(Locale.getDefault()).padStart(2, '0')
         println("STA \$$msbHex$lsbHex, Y")
 
-        val location = 256 * msb.toShort() + lsb.toShort()
-        memory[location] = cpu.acc
+        val location = absoluteY(cpu, lsb, msb)
+        memory[location.toInt()] = cpu.acc
         cpu.pc = cpu.pc.inc().inc().inc()
     }
 

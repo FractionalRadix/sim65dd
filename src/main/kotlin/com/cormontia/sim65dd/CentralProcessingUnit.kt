@@ -3,6 +3,13 @@ package com.cormontia.sim65dd
 import java.util.*
 import kotlin.reflect.KFunction1
 
+//TODO!+ Add and use hte other addressing modes.
+//TODO?~ Should they return Int, as apparently our memory array requires Int instead of short for addressing...?
+fun absolute(lsb: UByte, msb: UByte) = 256 * msb.toShort() + lsb.toShort()
+fun absoluteX(cpu: CentralProcessingUnit, lsb: UByte, msb: UByte) = (256 * msb.toShort() + lsb.toShort() + cpu.x.toShort()).toShort() // Conversion to short should be the same as "mod 65536".
+fun absoluteY(cpu: CentralProcessingUnit, lsb: UByte, msb: UByte) = (256 * msb.toShort() + lsb.toShort() + cpu.y.toShort()).toShort() // Conversion to short should be the same as "mod 65536".
+
+
 fun main() {
     val cpu = CentralProcessingUnit()
     val memory = program()
