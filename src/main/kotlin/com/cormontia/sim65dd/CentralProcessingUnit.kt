@@ -62,11 +62,14 @@ class CentralProcessingUnit {
 
                 0x81 -> { LoadStoreAccumulator().staIndexedIndirectX(this, memory, operand1) }
                 0x85 -> { LoadStoreAccumulator().staZeroPage(this, memory, operand1) }
+                0x86 -> { LoadStoreXRegister().stxZeroPage(this, memory, operand1) }
                 0x88 -> { dey() }
                 0x8D -> { LoadStoreAccumulator().staAbsolute(this, memory, operand1, operand2) }
+                0x8E -> { LoadStoreXRegister().stxAbsolute(this, memory, operand1, operand2) }
 
                 0x91 -> { LoadStoreAccumulator().staIndirectIndexedY(this, memory, operand1) }
                 0x95 -> { LoadStoreAccumulator().staZeroPageX(this, memory, operand1) }
+                0x96 -> { LoadStoreXRegister().stxZeroPageY(this, memory, operand1) }
                 0x99 -> { LoadStoreAccumulator().staAbsoluteY(this, memory, operand1, operand2) }
                 0x9D -> { LoadStoreAccumulator().staAbsoluteX(this, memory, operand1, operand2) }
 
