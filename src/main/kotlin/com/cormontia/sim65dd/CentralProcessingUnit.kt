@@ -114,17 +114,6 @@ class CentralProcessingUnit {
 
     }
 
-    private fun ldy_immediate(param: UByte) {
-        val operand = param.toString(16).uppercase(Locale.getDefault()).padStart(2, '0')
-        println("LDY #\$$operand")
-
-        y = param
-        N = (y and 128u > 0u)
-        Z = (y.compareTo(0u) == 0)
-        pc = pc.inc()
-        pc = pc.inc()
-    }
-
     private fun bpl(param: UByte) {
         val operand = param.toString(16).uppercase(Locale.getDefault()).padStart(2, '0')
         println("BPL $operand")
@@ -180,7 +169,7 @@ class CentralProcessingUnit {
     fun instructionSet(): List<Instruction> {
         val instructionSet = mutableListOf<Instruction>()
         //instructionSet.add(Instruction(0xA9.toUByte(), "LDA", ::lda_immediate, 2, false))
-        instructionSet.add(Instruction(0xA0.toUByte(), "LDY", ::ldy_immediate, 2, false))
+        //instructionSet.add(Instruction(0xA0.toUByte(), "LDY", ::ldy_immediate, 2, false))
         //TODO!+ val iny = Instruction(0xC8.toUByte(), "INY", ::iny) ... etc
         return instructionSet
     }
