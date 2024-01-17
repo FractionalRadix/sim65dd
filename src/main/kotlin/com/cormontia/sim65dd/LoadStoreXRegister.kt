@@ -8,8 +8,8 @@ class LoadStoreXRegister {
         println("LDX #\$$operand")
 
         cpu.x = param
-        cpu.N = (cpu.acc and 128u > 0u)
-        cpu.Z = (cpu.acc.compareTo(0u) == 0)
+        cpu.N = (cpu.x and 128u > 0u)
+        cpu.Z = (cpu.x.compareTo(0u) == 0)
         cpu.pc = cpu.pc.inc().inc()
     }
 
@@ -17,9 +17,10 @@ class LoadStoreXRegister {
         val operand = param.toString(16).uppercase(Locale.getDefault()).padStart(2, '0')
         println("LDX \$$operand")
 
-        cpu.x = memory[param.toInt()]
-        cpu.N = (cpu.acc and 128u > 0u)
-        cpu.Z = (cpu.acc.compareTo(0u) == 0)
+        val location = zeroPage(param)
+        cpu.x = memory[location.toInt()]
+        cpu.N = (cpu.x and 128u > 0u)
+        cpu.Z = (cpu.x.compareTo(0u) == 0)
         cpu.pc = cpu.pc.inc().inc()
     }
 
@@ -27,11 +28,11 @@ class LoadStoreXRegister {
         val operand = param.toString(16).uppercase(Locale.getDefault()).padStart(2, '0')
         println("LDX \$$operand, Y")
 
-        val newIndex = (param + cpu.y).toUByte() // Conversion to UByte, effectively the same as giving a "modulo 256".
-        cpu.x = memory[newIndex.toInt()]
+        val location = zeroPageY(cpu, param)
+        cpu.x = memory[location.toInt()]
 
-        cpu.N = (cpu.acc and 128u > 0u)
-        cpu.Z = (cpu.acc.compareTo(0u) == 0)
+        cpu.N = (cpu.x and 128u > 0u)
+        cpu.Z = (cpu.x.compareTo(0u) == 0)
         cpu.pc = cpu.pc.inc().inc()
     }
 
@@ -42,8 +43,8 @@ class LoadStoreXRegister {
 
         val location = absolute(lsb, msb)
         cpu.x = memory[location]
-        cpu.N = (cpu.acc and 128u > 0u)
-        cpu.Z = (cpu.acc.compareTo(0u) == 0)
+        cpu.N = (cpu.x and 128u > 0u)
+        cpu.Z = (cpu.x.compareTo(0u) == 0)
         cpu.pc = cpu.pc.inc().inc().inc()
     }
 
@@ -55,8 +56,8 @@ class LoadStoreXRegister {
         val location = absoluteY(cpu, lsb, msb)
         cpu.x = memory[location.toInt()]
 
-        cpu.N = (cpu.acc and 128u > 0u)
-        cpu.Z = (cpu.acc.compareTo(0u) == 0)
+        cpu.N = (cpu.x and 128u > 0u)
+        cpu.Z = (cpu.x.compareTo(0u) == 0)
         cpu.pc = cpu.pc.inc().inc().inc()
     }
 
@@ -64,7 +65,8 @@ class LoadStoreXRegister {
         val operand = param.toString(16).uppercase(Locale.getDefault()).padStart(2, '0')
         println("STX \$$operand")
 
-        memory[param.toInt()] = cpu.x
+        val location = zeroPage(param)
+        memory[location.toInt()] = cpu.x
         cpu.pc = cpu.pc.inc().inc()
     }
 
@@ -72,8 +74,8 @@ class LoadStoreXRegister {
         val operand = param.toString(16).uppercase(Locale.getDefault()).padStart(2, '0')
         println("STX \$$operand, Y")
 
-        val newIndex = (param + cpu.y).toUByte() // Conversion to UByte, effectively the same as giving a "modulo 256".
-        memory[newIndex.toInt()] = cpu.x
+        val location = zeroPageY(cpu, param)
+        memory[location.toInt()] = cpu.x
 
         cpu.pc = cpu.pc.inc().inc()
     }

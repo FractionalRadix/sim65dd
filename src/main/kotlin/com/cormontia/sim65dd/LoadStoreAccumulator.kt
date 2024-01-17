@@ -18,7 +18,8 @@ class LoadStoreAccumulator {
         val operand = param.toString(16).uppercase(Locale.getDefault()).padStart(2, '0')
         println("LDA \$$operand")
 
-        cpu.acc = memory[param.toInt()]
+        val location = zeroPage(param)
+        cpu.acc = memory[location.toInt()]
         cpu.N = (cpu.acc and 128u > 0u)
         cpu.Z = (cpu.acc.compareTo(0u) == 0)
         cpu.pc = cpu.pc.inc().inc()
@@ -28,7 +29,8 @@ class LoadStoreAccumulator {
         val operand = param.toString(16).uppercase(Locale.getDefault()).padStart(2, '0')
         println("STA \$$operand")
 
-        memory[param.toInt()] = cpu.acc
+        val location = zeroPage(param)
+        memory[location.toInt()] = cpu.acc
         cpu.pc = cpu.pc.inc().inc()
     }
 
@@ -36,8 +38,8 @@ class LoadStoreAccumulator {
         val operand = param.toString(16).uppercase(Locale.getDefault()).padStart(2, '0')
         println("LDA \$$operand, X")
 
-        val newIndex = (param + cpu.x).toUByte() // Conversion to UByte, effectively the same as giving a "modulo 256".
-        cpu.acc = memory[newIndex.toInt()]
+        val location = zeroPageX(cpu, param)
+        cpu.acc = memory[location.toInt()]
 
         cpu.N = (cpu.acc and 128u > 0u)
         cpu.Z = (cpu.acc.compareTo(0u) == 0)
@@ -48,7 +50,7 @@ class LoadStoreAccumulator {
         val operand = param.toString(16).uppercase(Locale.getDefault()).padStart(2, '0')
         println("STA \$$operand, X")
 
-        val newIndex = (param + cpu.x).toUByte() // Conversion to UByte, effectively the same as giving a "modulo 256".
+        val newIndex = zeroPageX(cpu, param) // Conversion to UByte, effectively the same as giving a "modulo 256".
         memory[newIndex.toInt()] = cpu.acc
 
         cpu.pc = cpu.pc.inc().inc()

@@ -8,7 +8,9 @@ import kotlin.reflect.KFunction1
 fun absolute(lsb: UByte, msb: UByte) = 256 * msb.toShort() + lsb.toShort()
 fun absoluteX(cpu: CentralProcessingUnit, lsb: UByte, msb: UByte) = (256 * msb.toShort() + lsb.toShort() + cpu.x.toShort()).toShort() // Conversion to short should be the same as "mod 65536".
 fun absoluteY(cpu: CentralProcessingUnit, lsb: UByte, msb: UByte) = (256 * msb.toShort() + lsb.toShort() + cpu.y.toShort()).toShort() // Conversion to short should be the same as "mod 65536".
-
+fun zeroPage(param: UByte) = param
+fun zeroPageX(cpu: CentralProcessingUnit, param: UByte) = (param + cpu.x).toUByte() // Conversion to UByte, effectively the same as giving a "modulo 256".
+fun zeroPageY(cpu: CentralProcessingUnit, param: UByte) = (param + cpu.y).toUByte() // Conversion to UByte, effectively the same as giving a "modulo 256".
 
 fun main() {
     val cpu = CentralProcessingUnit()
@@ -80,19 +82,23 @@ class CentralProcessingUnit {
                 0x99 -> { LoadStoreAccumulator().staAbsoluteY(this, memory, operand1, operand2) }
                 0x9D -> { LoadStoreAccumulator().staAbsoluteX(this, memory, operand1, operand2) }
 
-                0xA0 -> { ldy_immediate(operand1) }
+                0xA0 -> { LoadStoreYRegister().ldyImmediate(this, operand1) }
                 0xA1 -> { LoadStoreAccumulator().ldaIndexedIndirectX(this, memory, operand1) }
                 0xA2 -> { LoadStoreXRegister().ldxImmediate(this, operand1) }
+                0xA4 -> { LoadStoreYRegister().ldyZeroPage(this, memory, operand1) }
                 0xA5 -> { LoadStoreAccumulator().ldaZeroPage(this, memory, operand1) }
                 0xA6 -> { LoadStoreXRegister().ldxZeroPage(this, memory, operand1) }
                 0xA9 -> { LoadStoreAccumulator().ldaImmediate(this, operand1) }
+                0xAC -> { LoadStoreYRegister().ldyAbsolute(this, memory, operand1, operand2) }
                 0xAD -> { LoadStoreAccumulator().ldaAbsolute(this, memory, operand1, operand2) }
                 0xAE -> { LoadStoreXRegister().ldxAbsolute(this, memory, operand1, operand2) }
 
                 0xB1 -> { LoadStoreAccumulator().ldaIndirectIndexedY(this, memory, operand1) }
+                0xB4 -> { LoadStoreYRegister().ldyZeroPageX(this, memory, operand1) }
                 0xB5 -> { LoadStoreAccumulator().ldaZeroPageX(this, memory, operand1) }
                 0xB6 -> { LoadStoreXRegister().ldxZeroPageY(this, memory, operand1) }
                 0xB9 -> { LoadStoreAccumulator().ldaAbsoluteY(this, memory, operand1, operand2) }
+                0xBC -> { LoadStoreYRegister().ldyAbsoluteX(this, memory, operand1, operand2) }
                 0xBD -> { LoadStoreAccumulator().ldaAbsoluteX(this, memory, operand1, operand2) }
                 0xBE -> { LoadStoreXRegister().ldxAbsoluteY(this, memory, operand1, operand2) }
 
