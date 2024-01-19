@@ -3,7 +3,7 @@ package com.cormontia.sim65dd
 import java.util.*
 import kotlin.reflect.KFunction1
 
-//TODO!+ Add and use hte other addressing modes.
+//TODO!+ Add and use the other addressing modes. (That is, Indexed Indirect and Indirect Indexed... I think I got all the others now...)
 //TODO?~ Should they return Int, as apparently our memory array requires Int instead of short for addressing...?
 fun absolute(lsb: UByte, msb: UByte) = 256 * msb.toShort() + lsb.toShort()
 fun absoluteX(cpu: CentralProcessingUnit, lsb: UByte, msb: UByte) = (256 * msb.toShort() + lsb.toShort() + cpu.x.toShort()).toShort() // Conversion to short should be the same as "mod 65536".
@@ -71,12 +71,15 @@ class CentralProcessingUnit {
 
                 0x81 -> { LoadStoreAccumulator().staIndexedIndirectX(this, memory, operand1) }
                 0x85 -> { LoadStoreAccumulator().staZeroPage(this, memory, operand1) }
+                0x84 -> { LoadStoreYRegister().styZeroPage(this, memory, operand1) }
                 0x86 -> { LoadStoreXRegister().stxZeroPage(this, memory, operand1) }
                 0x88 -> { dey() }
+                0x8C -> { LoadStoreYRegister().styAbsolute(this, memory, operand1, operand2) }
                 0x8D -> { LoadStoreAccumulator().staAbsolute(this, memory, operand1, operand2) }
                 0x8E -> { LoadStoreXRegister().stxAbsolute(this, memory, operand1, operand2) }
 
                 0x91 -> { LoadStoreAccumulator().staIndirectIndexedY(this, memory, operand1) }
+                0x94 -> { LoadStoreYRegister().styZeroPageX(this, memory, operand1) }
                 0x95 -> { LoadStoreAccumulator().staZeroPageX(this, memory, operand1) }
                 0x96 -> { LoadStoreXRegister().stxZeroPageY(this, memory, operand1) }
                 0x99 -> { LoadStoreAccumulator().staAbsoluteY(this, memory, operand1, operand2) }
