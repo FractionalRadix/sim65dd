@@ -51,7 +51,7 @@ class CentralProcessingUnit {
     var x: UByte = 0u
     var y: UByte = 0u
     var pc: UShort = 0u
-    private var sp: UByte = 255u //  UByte.MAX_VALUE
+    var sp: UByte = 255u //  UByte.MAX_VALUE
 
     var N: Boolean = false
     var Z: Boolean = false
@@ -74,6 +74,7 @@ class CentralProcessingUnit {
                 0x84 -> { LoadStoreYRegister().styZeroPage(this, memory, operand1) }
                 0x86 -> { LoadStoreXRegister().stxZeroPage(this, memory, operand1) }
                 0x88 -> { dey() }
+                0x8A -> { TransferRegisters().txa(this) }
                 0x8C -> { LoadStoreYRegister().styAbsolute(this, memory, operand1, operand2) }
                 0x8D -> { LoadStoreAccumulator().staAbsolute(this, memory, operand1, operand2) }
                 0x8E -> { LoadStoreXRegister().stxAbsolute(this, memory, operand1, operand2) }
@@ -82,7 +83,9 @@ class CentralProcessingUnit {
                 0x94 -> { LoadStoreYRegister().styZeroPageX(this, memory, operand1) }
                 0x95 -> { LoadStoreAccumulator().staZeroPageX(this, memory, operand1) }
                 0x96 -> { LoadStoreXRegister().stxZeroPageY(this, memory, operand1) }
+                0x98 -> { TransferRegisters().tya(this) }
                 0x99 -> { LoadStoreAccumulator().staAbsoluteY(this, memory, operand1, operand2) }
+                0x9A -> { TransferRegisters().txs(this) }
                 0x9D -> { LoadStoreAccumulator().staAbsoluteX(this, memory, operand1, operand2) }
 
                 0xA0 -> { LoadStoreYRegister().ldyImmediate(this, operand1) }
@@ -91,7 +94,9 @@ class CentralProcessingUnit {
                 0xA4 -> { LoadStoreYRegister().ldyZeroPage(this, memory, operand1) }
                 0xA5 -> { LoadStoreAccumulator().ldaZeroPage(this, memory, operand1) }
                 0xA6 -> { LoadStoreXRegister().ldxZeroPage(this, memory, operand1) }
+                0xA8 -> { TransferRegisters().tay(this) }
                 0xA9 -> { LoadStoreAccumulator().ldaImmediate(this, operand1) }
+                0xAA -> { TransferRegisters().tax(this) }
                 0xAC -> { LoadStoreYRegister().ldyAbsolute(this, memory, operand1, operand2) }
                 0xAD -> { LoadStoreAccumulator().ldaAbsolute(this, memory, operand1, operand2) }
                 0xAE -> { LoadStoreXRegister().ldxAbsolute(this, memory, operand1, operand2) }
@@ -101,6 +106,7 @@ class CentralProcessingUnit {
                 0xB5 -> { LoadStoreAccumulator().ldaZeroPageX(this, memory, operand1) }
                 0xB6 -> { LoadStoreXRegister().ldxZeroPageY(this, memory, operand1) }
                 0xB9 -> { LoadStoreAccumulator().ldaAbsoluteY(this, memory, operand1, operand2) }
+                0xBA -> { TransferRegisters().tsx(this) }
                 0xBC -> { LoadStoreYRegister().ldyAbsoluteX(this, memory, operand1, operand2) }
                 0xBD -> { LoadStoreAccumulator().ldaAbsoluteX(this, memory, operand1, operand2) }
                 0xBE -> { LoadStoreXRegister().ldxAbsoluteY(this, memory, operand1, operand2) }
