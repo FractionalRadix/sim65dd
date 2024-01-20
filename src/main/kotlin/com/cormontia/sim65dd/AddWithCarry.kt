@@ -20,7 +20,19 @@ class AddWithCarry {
         val resultCarry = (sum > 255u)
         val resultZero = (sum == 0u)
         val resultNegative = (sum >= 128u)
-        val resultOverflow = TODO()
+
+        // Overflow flag. From https://stackoverflow.com/a/25926578/812149 .
+        // Not clear if this is correct for the 6502/6510 though...
+        //TODO!+ Check http://www.6502.org/tutorials/vflag.html and see if this code simulates the Overflow flag correctly.
+        val bothParametersPositive = op1 < 128u && op2 < 128u
+        val bothParametersNegative = op1 > 127u && op2 > 127u
+        val resultOverflow = if (bothParametersPositive && resultNegative) {
+            true
+        } else if (bothParametersNegative && !resultNegative) {
+            true
+        } else {
+            false
+        }
 
         return AdditionResult(resultValue, resultCarry, resultZero, resultNegative, resultOverflow)
     }
