@@ -3,13 +3,21 @@ package com.cormontia.sim65dd
 import java.util.*
 
 class AddWithCarry {
-    private class AdditionResult(
-        sum: UByte,
-        carry: Boolean,
-        zero: Boolean,
-        negative: Boolean,
-        overflow: Boolean,
-    )
+    private data class AdditionResult(
+        val sumValue: UByte,
+        val carry: Boolean,
+        val zero: Boolean,
+        val negative: Boolean,
+        val overflow: Boolean,
+    ) {
+        fun applyTo(cpu: CentralProcessingUnit) {
+            cpu.acc = sumValue
+            cpu.C = carry
+            cpu.Z = zero
+            cpu.N = negative
+            cpu.V = overflow
+        }
+    }
 
     private fun addWithCary(op1: UByte, op2: UByte, carry: Boolean) : AdditionResult {
         val op1Short = op1.toUShort()
@@ -37,27 +45,41 @@ class AddWithCarry {
         return AdditionResult(resultValue, resultCarry, resultZero, resultNegative, resultOverflow)
     }
 
-    fun adcImmediate(centralProcessingUnit: CentralProcessingUnit, param: UByte) {
+    fun adcImmediate(cpu: CentralProcessingUnit, param: UByte) {
         val operand = param.toString(16).uppercase(Locale.getDefault()).padStart(2, '0')
         println("ADC #\$$operand")
-        TODO()
+
+        val result = addWithCary(cpu.acc, param, cpu.C)
+        result.applyTo(cpu)
+
+        cpu.pc = cpu.pc.inc().inc()
     }
 
-    fun adcZeroPage(centralProcessingUnit: CentralProcessingUnit, memory: Array<UByte>, param: UByte) {
+    fun adcZeroPage(cpu: CentralProcessingUnit, memory: Array<UByte>, param: UByte) {
         val operand = param.toString(16).uppercase(Locale.getDefault()).padStart(2, '0')
         println("ADC \$$operand")
 
-        TODO()
+        val location = zeroPage(param).toInt()
+        val toAdd = memory[location]
+        val result = addWithCary(cpu.acc, toAdd, cpu.C)
+        result.applyTo(cpu)
+
+        cpu.pc = cpu.pc.inc().inc()
     }
 
-    fun adcZeroPageX(centralProcessingUnit: CentralProcessingUnit, memory: Array<UByte>, param: UByte) {
+    fun adcZeroPageX(cpu: CentralProcessingUnit, memory: Array<UByte>, param: UByte) {
         val operand = param.toString(16).uppercase(Locale.getDefault()).padStart(2, '0')
         println("ADC \$$operand, X")
 
-        TODO()
+        val location = zeroPageX(cpu, param).toInt()
+        val toAdd = memory[location]
+        val result = addWithCary(cpu.acc, toAdd, cpu.C)
+        result.applyTo(cpu)
+
+        cpu.pc = cpu.pc.inc().inc()
     }
 
-    fun adcAbsolute(centralProcessingUnit: CentralProcessingUnit, memory: Array<UByte>, lsb: UByte, msb: UByte) {
+    fun adcAbsolute(cpu: CentralProcessingUnit, memory: Array<UByte>, lsb: UByte, msb: UByte) {
         val lsbHex = lsb.toString(16).uppercase(Locale.getDefault()).padStart(2, '0')
         val msbHex = msb.toString(16).uppercase(Locale.getDefault()).padStart(2, '0')
         println("ADC \$$msbHex$lsbHex")
@@ -65,7 +87,7 @@ class AddWithCarry {
         TODO()
     }
 
-    fun adcAbsoluteX(centralProcessingUnit: CentralProcessingUnit, memory: Array<UByte>, lsb: UByte, msb: UByte) {
+    fun adcAbsoluteX(cpu: CentralProcessingUnit, memory: Array<UByte>, lsb: UByte, msb: UByte) {
         val lsbHex = lsb.toString(16).uppercase(Locale.getDefault()).padStart(2, '0')
         val msbHex = msb.toString(16).uppercase(Locale.getDefault()).padStart(2, '0')
         println("ADC \$$msbHex$lsbHex, X")
@@ -73,7 +95,7 @@ class AddWithCarry {
         TODO()
     }
 
-    fun adcAbsoluteY(centralProcessingUnit: CentralProcessingUnit, memory: Array<UByte>, lsb: UByte, msb: UByte) {
+    fun adcAbsoluteY(cpu: CentralProcessingUnit, memory: Array<UByte>, lsb: UByte, msb: UByte) {
         val lsbHex = lsb.toString(16).uppercase(Locale.getDefault()).padStart(2, '0')
         val msbHex = msb.toString(16).uppercase(Locale.getDefault()).padStart(2, '0')
         println("ADC \$$msbHex$lsbHex, Y")
@@ -81,14 +103,14 @@ class AddWithCarry {
         TODO()
     }
 
-    fun adcIndirectX(centralProcessingUnit: CentralProcessingUnit, memory: Array<UByte>, param: UByte) {
+    fun adcIndirectX(cpu: CentralProcessingUnit, memory: Array<UByte>, param: UByte) {
         val operand = param.toString(16).uppercase(Locale.getDefault()).padStart(2, '0')
         println("ADC (\$$operand, X)")
 
         TODO()
     }
 
-    fun adcIndirectY(centralProcessingUnit: CentralProcessingUnit, memory: Array<UByte>, param: UByte) {
+    fun adcIndirectY(cpu: CentralProcessingUnit, memory: Array<UByte>, param: UByte) {
         val operand = param.toString(16).uppercase(Locale.getDefault()).padStart(2, '0')
         println("ADC (\$$operand), Y")
 

@@ -55,6 +55,8 @@ class CentralProcessingUnit {
 
     var N: Boolean = false
     var Z: Boolean = false
+    var C: Boolean = false
+    var V: Boolean = false
 
 
     fun mainLoop(memory: Array<UByte>, startIp: UShort) {
@@ -68,6 +70,16 @@ class CentralProcessingUnit {
             val operand2 = memory[pc.inc().inc().toInt()]
             when (opCode.toInt()) {
                 0x10 -> { bpl(operand1) }
+
+                0x61 -> { AddWithCarry().adcIndirectX(this, memory, operand1) }
+                0x65 -> { AddWithCarry().adcZeroPage(this, memory, operand1) }
+                0x69 -> { AddWithCarry().adcImmediate(this, operand1) }
+                0x6D -> { AddWithCarry().adcAbsolute(this, memory, operand1, operand2) }
+
+                0x71 -> { AddWithCarry().adcIndirectY(this, memory, operand1) }
+                0x75 -> { AddWithCarry().adcZeroPageX(this, memory, operand1) }
+                0x79 -> { AddWithCarry().adcAbsoluteY(this, memory, operand1, operand2) }
+                0x7D -> { AddWithCarry().adcAbsoluteX(this, memory, operand1, operand2) }
 
                 0x81 -> { LoadStoreAccumulator().staIndexedIndirectX(this, memory, operand1) }
                 0x85 -> { LoadStoreAccumulator().staZeroPage(this, memory, operand1) }
