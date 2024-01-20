@@ -3,14 +3,26 @@ package com.cormontia.sim65dd
 import java.util.*
 
 class AddWithCarry {
-    private fun addWithCary(op1: UByte, op2: UByte, carry: Boolean) : Pair<UByte, Boolean> {
+    private class AdditionResult(
+        sum: UByte,
+        carry: Boolean,
+        zero: Boolean,
+        negative: Boolean,
+        overflow: Boolean,
+    )
+
+    private fun addWithCary(op1: UByte, op2: UByte, carry: Boolean) : AdditionResult {
         val op1Short = op1.toUShort()
         val op2Short = op2.toUShort()
         var sum = op1Short + op2Short
         if (carry) { sum++ }
-        val resultCarry = (sum > 255u)
         val resultValue = sum.toUByte() // "mod 256" is implicit.
-        return Pair(resultValue, resultCarry)
+        val resultCarry = (sum > 255u)
+        val resultZero = (sum == 0u)
+        val resultNegative = (sum >= 128u)
+        val resultOverflow = TODO()
+
+        return AdditionResult(resultValue, resultCarry, resultZero, resultNegative, resultOverflow)
     }
 
     fun adcImmediate(centralProcessingUnit: CentralProcessingUnit, param: UByte) {
