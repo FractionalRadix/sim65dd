@@ -129,11 +129,8 @@ class LoadStoreAccumulator {
         val operand = param.toString(16).uppercase(Locale.getDefault()).padStart(2, '0')
         println("LDA \$($operand, X)")
 
-        val location1 = (param + cpu.x).toUByte()
-        val zeroPageValueLsb = memory[location1.toInt()]
-        val zeroPageValueMsb = memory[location1.toInt().inc()]
-        val location2 = (256u * zeroPageValueMsb.toUShort() + zeroPageValueLsb.toUShort()).toUShort()
-        cpu.acc = memory[location2.toInt()]
+        val location = indexedIndirectX(cpu, memory, param)
+        cpu.acc = memory[location.toInt()]
 
         cpu.N = (cpu.acc and 128u > 0u)
         cpu.Z = (cpu.acc.compareTo(0u) == 0)
@@ -144,11 +141,8 @@ class LoadStoreAccumulator {
         val operand = param.toString(16).uppercase(Locale.getDefault()).padStart(2, '0')
         println("STA \$($operand, X)")
 
-        val location1 = (param + cpu.x).toUByte()
-        val zeroPageValueLsb = memory[location1.toInt()]
-        val zeroPageValueMsb = memory[location1.toInt().inc()]
-        val location2 = (256u * zeroPageValueMsb.toUShort() + zeroPageValueLsb.toUShort()).toUShort()
-        memory[location2.toInt()] = cpu.acc
+        val location = indexedIndirectX(cpu, memory, param)
+        memory[location.toInt()] = cpu.acc
 
         cpu.pc = cpu.pc.inc().inc()
     }
@@ -157,9 +151,7 @@ class LoadStoreAccumulator {
         val operand = param.toString(16).uppercase(Locale.getDefault()).padStart(2, '0')
         println("LDA $($operand),Y")
 
-        val zeroPageValueLsb = memory[param.toInt()]
-        val zeroPageValueMsb = memory[(param.inc()).toInt()]
-        val location = (256u * zeroPageValueMsb + zeroPageValueLsb + cpu.y).toUShort()
+        val location = indirectIndexedY(cpu, memory, param)
         cpu.acc = memory[location.toInt()]
 
         cpu.N = (cpu.acc and 128u > 0u)
@@ -171,9 +163,7 @@ class LoadStoreAccumulator {
         val operand = param.toString(16).uppercase(Locale.getDefault()).padStart(2, '0')
         println("STA $($operand),Y")
 
-        val zeroPageValueLsb = memory[param.toInt()]
-        val zeroPageValueMsb = memory[(param.inc()).toInt()]
-        val location = (256u * zeroPageValueMsb + zeroPageValueLsb + cpu.y).toUShort()
+        val location = indirectIndexedY(cpu, memory, param)
         memory[location.toInt()] = cpu.acc
 
         cpu.pc = cpu.pc.inc().inc()

@@ -3,14 +3,26 @@ package com.cormontia.sim65dd
 import java.util.*
 import kotlin.reflect.KFunction1
 
-//TODO!+ Add and use the other addressing modes. (That is, Indexed Indirect and Indirect Indexed... I think I got all the others now...)
-//TODO?~ Should they return Int, as apparently our memory array requires Int instead of short for addressing...?
+//TODO?~ Should these methods return Int, as apparently our memory array requires Int instead of short for addressing...?
 fun absolute(lsb: UByte, msb: UByte) = 256 * msb.toShort() + lsb.toShort()
 fun absoluteX(cpu: CentralProcessingUnit, lsb: UByte, msb: UByte) = (256 * msb.toShort() + lsb.toShort() + cpu.x.toShort()).toShort() // Conversion to short should be the same as "mod 65536".
 fun absoluteY(cpu: CentralProcessingUnit, lsb: UByte, msb: UByte) = (256 * msb.toShort() + lsb.toShort() + cpu.y.toShort()).toShort() // Conversion to short should be the same as "mod 65536".
 fun zeroPage(param: UByte) = param
 fun zeroPageX(cpu: CentralProcessingUnit, param: UByte) = (param + cpu.x).toUByte() // Conversion to UByte, effectively the same as giving a "modulo 256".
 fun zeroPageY(cpu: CentralProcessingUnit, param: UByte) = (param + cpu.y).toUByte() // Conversion to UByte, effectively the same as giving a "modulo 256".
+fun indirectIndexedY(cpu: CentralProcessingUnit, memory: Array<UByte>, param: UByte): UShort {
+    val zeroPageValueLsb = memory[param.toInt()]
+    val zeroPageValueMsb = memory[(param.inc()).toInt()]
+    val location = (256u * zeroPageValueMsb + zeroPageValueLsb + cpu.y).toUShort()
+    return location
+}
+fun indexedIndirectX(cpu: CentralProcessingUnit, memory: Array<UByte>, param: UByte): UShort {
+    val location1 = (param + cpu.x).toUByte()
+    val zeroPageValueLsb = memory[location1.toInt()]
+    val zeroPageValueMsb = memory[location1.toInt().inc()]
+    val location2 = (256u * zeroPageValueMsb.toUShort() + zeroPageValueLsb.toUShort()).toUShort()
+    return location2
+}
 
 fun main() {
     val cpu = CentralProcessingUnit()
