@@ -84,7 +84,12 @@ class AddWithCarry {
         val msbHex = msb.toString(16).uppercase(Locale.getDefault()).padStart(2, '0')
         println("ADC \$$msbHex$lsbHex")
 
-        TODO()
+        val location = absolute(lsb, msb)
+        val toAdd = memory[location]
+        val result = addWithCary(cpu.acc, toAdd, cpu.C)
+        result.applyTo(cpu)
+
+        cpu.pc = cpu.pc.inc().inc().inc()
     }
 
     fun adcAbsoluteX(cpu: CentralProcessingUnit, memory: Array<UByte>, lsb: UByte, msb: UByte) {
@@ -92,7 +97,12 @@ class AddWithCarry {
         val msbHex = msb.toString(16).uppercase(Locale.getDefault()).padStart(2, '0')
         println("ADC \$$msbHex$lsbHex, X")
 
-        TODO()
+        val location = absoluteX(cpu, lsb, msb)
+        val toAdd = memory[location.toInt()]
+        val result = addWithCary(cpu.acc, toAdd, cpu.C)
+        result.applyTo(cpu)
+
+        cpu.pc = cpu.pc.inc().inc().inc()
     }
 
     fun adcAbsoluteY(cpu: CentralProcessingUnit, memory: Array<UByte>, lsb: UByte, msb: UByte) {
@@ -100,20 +110,35 @@ class AddWithCarry {
         val msbHex = msb.toString(16).uppercase(Locale.getDefault()).padStart(2, '0')
         println("ADC \$$msbHex$lsbHex, Y")
 
-        TODO()
+        val location = absoluteY(cpu, lsb, msb)
+        val toAdd = memory[location.toInt()]
+        val result = addWithCary(cpu.acc, toAdd, cpu.C)
+        result.applyTo(cpu)
+
+        cpu.pc = cpu.pc.inc().inc().inc()
     }
 
     fun adcIndirectX(cpu: CentralProcessingUnit, memory: Array<UByte>, param: UByte) {
         val operand = param.toString(16).uppercase(Locale.getDefault()).padStart(2, '0')
         println("ADC (\$$operand, X)")
 
-        TODO()
+        val location = indexedIndirectX(cpu, memory, param)
+        val toAdd = memory[location.toInt()]
+        val result = addWithCary(cpu.acc, toAdd, cpu.C)
+        result.applyTo(cpu)
+
+        cpu.pc = cpu.pc.inc().inc()
     }
 
     fun adcIndirectY(cpu: CentralProcessingUnit, memory: Array<UByte>, param: UByte) {
         val operand = param.toString(16).uppercase(Locale.getDefault()).padStart(2, '0')
         println("ADC (\$$operand), Y")
 
-        TODO()
+        val location = indirectIndexedY(cpu, memory, param)
+        val toAdd = memory[location.toInt()]
+        val result = addWithCary(cpu.acc, toAdd, cpu.C)
+        result.applyTo(cpu)
+
+        cpu.pc = cpu.pc.inc().inc()
     }
 }
