@@ -83,12 +83,22 @@ class CentralProcessingUnit {
             when (opCode.toInt()) {
                 0x10 -> { bpl(operand1) }
 
-                0x61 -> { AddWithCarry().adcIndirectX(this, memory, operand1) }
+                0x21 -> { AndOperation().andIndexedIndirectX(this, memory, operand1) }
+                0x25 -> { AndOperation().andZeroPage(this, memory, operand1) }
+                0x29 -> { AndOperation().andImmediate(this, operand1) }
+                0x2D -> { AndOperation().andAbsolute(this, memory, operand1, operand2) }
+
+                0x31 -> { AndOperation().andIndirectIndexedY(this, memory, operand1) }
+                0x35 -> { AndOperation().andZeroPageX(this, memory, operand1) }
+                0x39 -> { AndOperation().andAbsoluteY(this, memory, operand1, operand2) }
+                0x3D -> { AndOperation().andAbsoluteX(this, memory, operand1, operand2) }
+
+                0x61 -> { AddWithCarry().adcIndexedIndirectX(this, memory, operand1) }
                 0x65 -> { AddWithCarry().adcZeroPage(this, memory, operand1) }
                 0x69 -> { AddWithCarry().adcImmediate(this, operand1) }
                 0x6D -> { AddWithCarry().adcAbsolute(this, memory, operand1, operand2) }
 
-                0x71 -> { AddWithCarry().adcIndirectY(this, memory, operand1) }
+                0x71 -> { AddWithCarry().adcIndirectIndexedY(this, memory, operand1) }
                 0x75 -> { AddWithCarry().adcZeroPageX(this, memory, operand1) }
                 0x79 -> { AddWithCarry().adcAbsoluteY(this, memory, operand1, operand2) }
                 0x7D -> { AddWithCarry().adcAbsoluteX(this, memory, operand1, operand2) }

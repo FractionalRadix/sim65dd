@@ -118,7 +118,7 @@ class AddWithCarry {
         cpu.pc = cpu.pc.inc().inc().inc()
     }
 
-    fun adcIndirectX(cpu: CentralProcessingUnit, memory: Array<UByte>, param: UByte) {
+    fun adcIndexedIndirectX(cpu: CentralProcessingUnit, memory: Array<UByte>, param: UByte) {
         val operand = param.toString(16).uppercase(Locale.getDefault()).padStart(2, '0')
         println("ADC (\$$operand, X)")
 
@@ -130,7 +130,7 @@ class AddWithCarry {
         cpu.pc = cpu.pc.inc().inc()
     }
 
-    fun adcIndirectY(cpu: CentralProcessingUnit, memory: Array<UByte>, param: UByte) {
+    fun adcIndirectIndexedY(cpu: CentralProcessingUnit, memory: Array<UByte>, param: UByte) {
         val operand = param.toString(16).uppercase(Locale.getDefault()).padStart(2, '0')
         println("ADC (\$$operand), Y")
 
