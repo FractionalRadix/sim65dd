@@ -56,7 +56,6 @@ class AlternativeAslOperation {
         val msbHex = msb.toString(16).uppercase(Locale.getDefault()).padStart(2, '0')
         println("ASL \$$msbHex$lsbHex, X")
 
-        val location = absoluteX(cpu, lsb, msb)
         val mem = memory.getAbsoluteX(cpu, lsb, msb)
         memory.setAbsoluteX(cpu, lsb, msb, performAsl(cpu, mem))
 

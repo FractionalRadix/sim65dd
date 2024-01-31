@@ -109,11 +109,11 @@ class MemoryAsArray: Memory {
         TODO("Not yet implemented")
     }
 
-    override fun getIndexedIndirectX(cpu: CentralProcessingUnit, location: UByte): UShort {
+    override fun getIndexedIndirectX(cpu: CentralProcessingUnit, location: UByte): UByte {
         TODO("Not yet implemented")
     }
 
-    override fun setIndexedIndirectX(cpu: CentralProcessingUnit, location: UByte, value: UByte): UShort {
+    override fun setIndexedIndirectX(cpu: CentralProcessingUnit, location: UByte, value: UByte): UByte {
         TODO("Not yet implemented")
     }
 
@@ -184,11 +184,11 @@ class MemoryAsMutableMap: Memory {
         TODO("Not yet implemented")
     }
 
-    override fun getIndexedIndirectX(cpu: CentralProcessingUnit, location: UByte): UShort {
+    override fun getIndexedIndirectX(cpu: CentralProcessingUnit, location: UByte): UByte {
         TODO("Not yet implemented")
     }
 
-    override fun setIndexedIndirectX(cpu: CentralProcessingUnit, location: UByte, value: UByte): UShort {
+    override fun setIndexedIndirectX(cpu: CentralProcessingUnit, location: UByte, value: UByte): UByte {
         TODO("Not yet implemented")
     }
 
