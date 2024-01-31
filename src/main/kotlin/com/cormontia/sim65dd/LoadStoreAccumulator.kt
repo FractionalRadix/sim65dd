@@ -39,7 +39,7 @@ class LoadStoreAccumulator {
         println("LDA \$$operand, X")
 
         val location = zeroPageX(cpu, param)
-        cpu.acc = memory[location.toInt()]
+        cpu.acc = memory[location]
 
         cpu.N = (cpu.acc and 128u > 0u)
         cpu.Z = (cpu.acc.compareTo(0u) == 0)
@@ -51,7 +51,7 @@ class LoadStoreAccumulator {
         println("STA \$$operand, X")
 
         val newIndex = zeroPageX(cpu, param) // Conversion to UByte, effectively the same as giving a "modulo 256".
-        memory[newIndex.toInt()] = cpu.acc
+        memory[newIndex] = cpu.acc
 
         cpu.pc = cpu.pc.inc().inc()
     }
@@ -84,7 +84,7 @@ class LoadStoreAccumulator {
         print("LDA \$$msbHex$lsbHex,X")
 
         val location = absoluteX(cpu, lsb, msb)
-        cpu.acc = memory[location.toInt()]
+        cpu.acc = memory[location]
 
         cpu.N = (cpu.acc and 128u > 0u)
         cpu.Z = (cpu.acc.compareTo(0u) == 0)
@@ -97,7 +97,7 @@ class LoadStoreAccumulator {
         print("STA \$$msbHex$lsbHex,X")
 
         val location = absoluteY(cpu, lsb, msb)
-        memory[location.toInt()] = cpu.acc
+        memory[location] = cpu.acc
 
         cpu.pc = cpu.pc.inc().inc().inc()
     }
@@ -108,7 +108,7 @@ class LoadStoreAccumulator {
         print("LDA \$$msbHex$lsbHex,Y")
 
         val location = absoluteY(cpu, lsb, msb)
-        cpu.acc = memory[location.toInt()]
+        cpu.acc = memory[location]
 
         cpu.N = (cpu.acc and 128u > 0u)
         cpu.Z = (cpu.acc.compareTo(0u) == 0)
@@ -121,7 +121,7 @@ class LoadStoreAccumulator {
         println("STA \$$msbHex$lsbHex, Y")
 
         val location = absoluteY(cpu, lsb, msb)
-        memory[location.toInt()] = cpu.acc
+        memory[location] = cpu.acc
         cpu.pc = cpu.pc.inc().inc().inc()
     }
 
@@ -130,7 +130,7 @@ class LoadStoreAccumulator {
         println("LDA \$($operand, X)")
 
         val location = indexedIndirectX(cpu, memory, param)
-        cpu.acc = memory[location.toInt()]
+        cpu.acc = memory[location]
 
         cpu.N = (cpu.acc and 128u > 0u)
         cpu.Z = (cpu.acc.compareTo(0u) == 0)

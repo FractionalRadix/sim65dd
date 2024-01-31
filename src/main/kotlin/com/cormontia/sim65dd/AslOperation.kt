@@ -17,6 +17,8 @@ class AslOperation {
         println("ASL A")
 
         cpu.acc = performAsl(cpu, cpu.acc)
+
+        cpu.pc = cpu.pc.inc()
     }
 
     fun aslZeroPage(cpu: CentralProcessingUnit, memory: Array<UByte>, param: UByte) {
@@ -26,6 +28,8 @@ class AslOperation {
         val location = zeroPage(param)
         val mem = memory[location]
         memory[location] = performAsl(cpu, mem)
+
+        cpu.pc = cpu.pc.inc().inc()
     }
 
     fun aslZeroPageX(cpu: CentralProcessingUnit, memory: Array<UByte>, param: UByte) {
@@ -35,6 +39,8 @@ class AslOperation {
         val location = zeroPageX(cpu, param)
         val mem = memory[location]
         memory[location] = performAsl(cpu, mem)
+
+        cpu.pc = cpu.pc.inc().inc()
     }
 
     fun aslAbsolute(cpu: CentralProcessingUnit, memory: Array<UByte>, lsb: UByte, msb: UByte) {
@@ -42,7 +48,11 @@ class AslOperation {
         val msbHex = msb.toString(16).uppercase(Locale.getDefault()).padStart(2, '0')
         println("ASL \$$msbHex$lsbHex")
 
-        TODO()
+        val location = absolute(lsb, msb)
+        val mem = memory[location]
+        memory[location] = performAsl(cpu, mem)
+
+        cpu.pc = cpu.pc.inc().inc().inc()
     }
 
     fun aslAbsoluteX(cpu: CentralProcessingUnit, memory: Array<UByte>, lsb: UByte, msb: UByte) {
@@ -50,7 +60,11 @@ class AslOperation {
         val msbHex = msb.toString(16).uppercase(Locale.getDefault()).padStart(2, '0')
         println("ASL \$$msbHex$lsbHex, X")
 
-        TODO()
+        val location = absoluteX(cpu, lsb, msb)
+        val mem = memory[location]
+        memory[location] = performAsl(cpu, mem)
+
+        cpu.pc = cpu.pc.inc().inc().inc()
     }
 
 }
