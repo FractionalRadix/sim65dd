@@ -139,7 +139,18 @@ class MemoryAsArray: Memory {
     }
 
     fun toMemoryAsMutableMap(): MemoryAsMutableMap {
-        TODO()
+        val memoryAsMutableMap = MemoryAsMutableMap()
+        for (i in array.indices) {
+            //TODO?- Maybe the condition should be removed, it is based upon the assumption that a non-defined entry will always be treated as 0.
+            if (array[i] != 0.toUByte()) {
+                memoryAsMutableMap[i.toUShort()] = array[i]
+            }
+        }
+        return memoryAsMutableMap
+    }
+
+    operator fun set(index: UShort, value: UByte) {
+        array[index.toInt()] = value
     }
 }
 
@@ -214,6 +225,14 @@ class MemoryAsMutableMap: Memory {
     }
 
     fun toMemoryAsArray(): MemoryAsArray {
-        TODO()
+        val memoryAsArray = MemoryAsArray()
+        map.forEach {
+            memoryAsArray[it.key] = it.value
+        }
+        return memoryAsArray
+    }
+
+    operator fun set(index: UShort, value: UByte) {
+        map[index] = value
     }
 }
