@@ -1,7 +1,5 @@
 package com.cormontia.sim65dd
 
-import kotlin.math.abs
-
 interface Memory {
     fun absolute(lsb: UByte, msb: UByte) = (256 * msb.toShort() + lsb.toShort()).toUShort()
     fun absoluteX(cpu: CentralProcessingUnit, lsb: UByte, msb: UByte) = (256 * msb.toShort() + lsb.toShort() + cpu.x.toShort()).toUShort()
