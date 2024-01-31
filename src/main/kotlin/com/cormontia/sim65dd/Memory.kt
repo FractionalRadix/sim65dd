@@ -41,9 +41,9 @@ interface Memory {
     fun setZeroPageY(cpu: CentralProcessingUnit, location: UByte, value: UByte)
 
     fun getIndirectIndexedY(cpu: CentralProcessingUnit, location: UByte): UByte
-    fun setIndirectIndexedY(cpu: CentralProcessingUnit, location: UByte, value: UByte): UByte
+    fun setIndirectIndexedY(cpu: CentralProcessingUnit, location: UByte, value: UByte)
     fun getIndexedIndirectX(cpu: CentralProcessingUnit, location: UByte): UByte
-    fun setIndexedIndirectX(cpu: CentralProcessingUnit, location: UByte, value: UByte): UByte
+    fun setIndexedIndirectX(cpu: CentralProcessingUnit, location: UByte, value: UByte)
 
 }
 
@@ -51,70 +51,91 @@ class MemoryAsArray: Memory {
     private val array = Array<UByte>(65536) { 0u }
 
     override fun getAbsolute(lsb: UByte, msb: UByte): UByte {
-        val location = absolute(lsb, msb)
-        val value = array[location.toInt()]
+        val address = absolute(lsb, msb)
+        val value = array[address.toInt()]
         return value
     }
 
     override fun setAbsolute(lsb: UByte, msb: UByte, value: UByte) {
-        val location = absolute(lsb, msb)
-        array[location.toInt()] = value
+        val address = absolute(lsb, msb)
+        array[address.toInt()] = value
     }
 
     override fun getAbsoluteX(cpu: CentralProcessingUnit, lsb: UByte, msb: UByte): UByte {
-        TODO("Not yet implemented")
+        val address = absoluteX(cpu, lsb, msb)
+        val value = array[address.toInt()]
+        return value
     }
 
     override fun setAbsoluteX(cpu: CentralProcessingUnit, lsb: UByte, msb: UByte, value: UByte) {
-        TODO("Not yet implemented")
+        val address = absoluteX(cpu, lsb, msb)
+        array[address.toInt()] = value
     }
 
     override fun getAbsoluteY(cpu: CentralProcessingUnit, lsb: UByte, msb: UByte): UByte {
-        TODO("Not yet implemented")
+        val address = absoluteY(cpu, lsb, msb)
+        val value = array[address.toInt()]
+        return value
     }
 
     override fun setAbsoluteY(cpu: CentralProcessingUnit, lsb: UByte, msb: UByte, value: UByte) {
-        TODO("Not yet implemented")
+        val address = absoluteY(cpu, lsb, msb)
+        array[address.toInt()] = value
     }
 
     override fun getZeroPage(location: UByte): UByte {
-        TODO("Not yet implemented")
+        val address = getZeroPage(location)
+        val value = array[address.toInt()]
+        return value
     }
 
     override fun setZeroPage(location: UByte, value: UByte) {
-        TODO("Not yet implemented")
+        val address = getZeroPage(location)
+        array[address.toInt()] = value
     }
 
     override fun getZeroPageX(cpu: CentralProcessingUnit, location: UByte): UByte {
-        TODO("Not yet implemented")
+        val address = getZeroPageX(cpu, location)
+        val value = array[address.toInt()]
+        return value
     }
 
     override fun setZeroPageX(cpu: CentralProcessingUnit, location: UByte, value: UByte) {
-        TODO("Not yet implemented")
+        val address = getZeroPageX(cpu, location)
+        array[address.toInt()] = value
     }
 
     override fun getZeroPageY(cpu: CentralProcessingUnit, location: UByte): UByte {
-        TODO("Not yet implemented")
+        val address = getZeroPageY(cpu, location)
+        val value = array[address.toInt()]
+        return value
     }
 
     override fun setZeroPageY(cpu: CentralProcessingUnit, location: UByte, value: UByte) {
-        TODO("Not yet implemented")
+        val address = getZeroPageY(cpu, location)
+        array[address.toInt()] = value
     }
 
     override fun getIndirectIndexedY(cpu: CentralProcessingUnit, location: UByte): UByte {
-        TODO("Not yet implemented")
+        val address = getIndirectIndexedY(cpu, location)
+        val value = array[address.toInt()]
+        return value
     }
 
-    override fun setIndirectIndexedY(cpu: CentralProcessingUnit, location: UByte, value: UByte): UByte {
-        TODO("Not yet implemented")
+    override fun setIndirectIndexedY(cpu: CentralProcessingUnit, location: UByte, value: UByte) {
+        val address = getIndirectIndexedY(cpu, location)
+        array[address.toInt()] = value
     }
 
     override fun getIndexedIndirectX(cpu: CentralProcessingUnit, location: UByte): UByte {
-        TODO("Not yet implemented")
+        val address = getIndexedIndirectX(cpu, location)
+        val value = array[address.toInt()]
+        return value
     }
 
-    override fun setIndexedIndirectX(cpu: CentralProcessingUnit, location: UByte, value: UByte): UByte {
-        TODO("Not yet implemented")
+    override fun setIndexedIndirectX(cpu: CentralProcessingUnit, location: UByte, value: UByte) {
+        val address = getIndexedIndirectX(cpu, location)
+        array[address.toInt()] = value
     }
 
     fun toMemoryAsMutableMap(): MemoryAsMutableMap {
@@ -180,7 +201,7 @@ class MemoryAsMutableMap: Memory {
         TODO("Not yet implemented")
     }
 
-    override fun setIndirectIndexedY(cpu: CentralProcessingUnit, location: UByte, value: UByte): UByte {
+    override fun setIndirectIndexedY(cpu: CentralProcessingUnit, location: UByte, value: UByte) {
         TODO("Not yet implemented")
     }
 
@@ -188,7 +209,7 @@ class MemoryAsMutableMap: Memory {
         TODO("Not yet implemented")
     }
 
-    override fun setIndexedIndirectX(cpu: CentralProcessingUnit, location: UByte, value: UByte): UByte {
+    override fun setIndexedIndirectX(cpu: CentralProcessingUnit, location: UByte, value: UByte) {
         TODO("Not yet implemented")
     }
 
