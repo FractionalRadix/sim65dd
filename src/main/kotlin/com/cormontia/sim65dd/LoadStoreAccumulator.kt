@@ -19,7 +19,7 @@ class LoadStoreAccumulator {
         println("LDA \$$operand")
 
         val location = zeroPage(param)
-        cpu.acc = memory[location.toInt()]
+        cpu.acc = memory[location]
         cpu.N = (cpu.acc and 128u > 0u)
         cpu.Z = (cpu.acc.compareTo(0u) == 0)
         cpu.pc = cpu.pc.inc().inc()
@@ -30,7 +30,7 @@ class LoadStoreAccumulator {
         println("STA \$$operand")
 
         val location = zeroPage(param)
-        memory[location.toInt()] = cpu.acc
+        memory[location] = cpu.acc
         cpu.pc = cpu.pc.inc().inc()
     }
 
@@ -142,7 +142,7 @@ class LoadStoreAccumulator {
         println("STA \$($operand, X)")
 
         val location = indexedIndirectX(cpu, memory, param)
-        memory[location.toInt()] = cpu.acc
+        memory[location] = cpu.acc
 
         cpu.pc = cpu.pc.inc().inc()
     }
@@ -152,7 +152,7 @@ class LoadStoreAccumulator {
         println("LDA $($operand),Y")
 
         val location = indirectIndexedY(cpu, memory, param)
-        cpu.acc = memory[location.toInt()]
+        cpu.acc = memory[location]
 
         cpu.N = (cpu.acc and 128u > 0u)
         cpu.Z = (cpu.acc.compareTo(0u) == 0)
@@ -164,7 +164,7 @@ class LoadStoreAccumulator {
         println("STA $($operand),Y")
 
         val location = indirectIndexedY(cpu, memory, param)
-        memory[location.toInt()] = cpu.acc
+        memory[location] = cpu.acc
 
         cpu.pc = cpu.pc.inc().inc()
     }

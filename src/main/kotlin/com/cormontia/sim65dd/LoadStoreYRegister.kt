@@ -18,7 +18,7 @@ class LoadStoreYRegister {
         println("LDY \$$operand")
 
         val location = zeroPage(param)
-        cpu.y = memory[location.toInt()]
+        cpu.y = memory[location]
         cpu.N = (cpu.y and 128u > 0u)
         cpu.Z = (cpu.y.compareTo(0u) == 0)
         cpu.pc = cpu.pc.inc().inc()
@@ -29,7 +29,7 @@ class LoadStoreYRegister {
         println("STY \$$operand")
 
         val location = zeroPage(param)
-        memory[location.toInt()] = cpu.y
+        memory[location] = cpu.y
         cpu.pc = cpu.pc.inc().inc()
     }
 
@@ -38,7 +38,7 @@ class LoadStoreYRegister {
         println("LDY \$$operand, X")
 
         val location = zeroPageX(cpu, param)
-        cpu.y = memory[location.toInt()]
+        cpu.y = memory[location]
 
         cpu.N = (cpu.y and 128u > 0u)
         cpu.Z = (cpu.y.compareTo(0u) == 0)
@@ -50,7 +50,7 @@ class LoadStoreYRegister {
         println("STY \$$operand, X")
 
         val location = zeroPageX(cpu, param)
-        memory[location.toInt()] = cpu.y
+        memory[location] = cpu.y
 
         cpu.pc = cpu.pc.inc().inc()
     }
@@ -83,7 +83,7 @@ class LoadStoreYRegister {
         println("LDY \$$msbHex$lsbHex, X")
 
         val location = absoluteX(cpu, lsb, msb)
-        cpu.x = memory[location.toInt()]
+        cpu.x = memory[location]
         cpu.N = (cpu.y and 128u > 0u)
         cpu.Z = (cpu.y.compareTo(0u) == 0)
         cpu.pc = cpu.pc.inc().inc().inc()

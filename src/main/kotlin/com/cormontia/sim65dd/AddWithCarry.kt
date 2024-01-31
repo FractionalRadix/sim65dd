@@ -59,7 +59,7 @@ class AddWithCarry {
         val operand = param.toString(16).uppercase(Locale.getDefault()).padStart(2, '0')
         println("ADC \$$operand")
 
-        val location = zeroPage(param).toInt()
+        val location = zeroPage(param)
         val toAdd = memory[location]
         val result = addWithCary(cpu.acc, toAdd, cpu.C)
         result.applyTo(cpu)
@@ -98,7 +98,7 @@ class AddWithCarry {
         println("ADC \$$msbHex$lsbHex, X")
 
         val location = absoluteX(cpu, lsb, msb)
-        val toAdd = memory[location.toInt()]
+        val toAdd = memory[location]
         val result = addWithCary(cpu.acc, toAdd, cpu.C)
         result.applyTo(cpu)
 

@@ -4,24 +4,24 @@ import java.util.*
 import kotlin.reflect.KFunction1
 
 //TODO?~ Should these methods return Int, as apparently our memory array requires Int instead of short for addressing...?
-fun absolute(lsb: UByte, msb: UByte) = 256 * msb.toShort() + lsb.toShort()
-fun absoluteX(cpu: CentralProcessingUnit, lsb: UByte, msb: UByte) = (256 * msb.toShort() + lsb.toShort() + cpu.x.toShort()).toShort() // Conversion to short should be the same as "mod 65536".
-fun absoluteY(cpu: CentralProcessingUnit, lsb: UByte, msb: UByte) = (256 * msb.toShort() + lsb.toShort() + cpu.y.toShort()).toShort() // Conversion to short should be the same as "mod 65536".
-fun zeroPage(param: UByte) = param
-fun zeroPageX(cpu: CentralProcessingUnit, param: UByte) = (param + cpu.x).toUByte() // Conversion to UByte, effectively the same as giving a "modulo 256".
-fun zeroPageY(cpu: CentralProcessingUnit, param: UByte) = (param + cpu.y).toUByte() // Conversion to UByte, effectively the same as giving a "modulo 256".
-fun indirectIndexedY(cpu: CentralProcessingUnit, memory: Array<UByte>, param: UByte): UShort {
+fun absolute(lsb: UByte, msb: UByte) = (256 * msb.toShort() + lsb.toShort()) % 65536
+fun absoluteX(cpu: CentralProcessingUnit, lsb: UByte, msb: UByte) = (256 * msb.toShort() + lsb.toShort() + cpu.x.toShort()) % 65536
+fun absoluteY(cpu: CentralProcessingUnit, lsb: UByte, msb: UByte) = (256 * msb.toShort() + lsb.toShort() + cpu.y.toShort()) % 65535
+fun zeroPage(param: UByte) = param.toInt()
+fun zeroPageX(cpu: CentralProcessingUnit, param: UByte) = ((param + cpu.x) % 256u).toInt()
+fun zeroPageY(cpu: CentralProcessingUnit, param: UByte) = ((param + cpu.y) % 256u).toInt()
+fun indirectIndexedY(cpu: CentralProcessingUnit, memory: Array<UByte>, param: UByte): Int {
     val zeroPageValueLsb = memory[param.toInt()]
     val zeroPageValueMsb = memory[(param.inc()).toInt()]
-    val location = (256u * zeroPageValueMsb + zeroPageValueLsb + cpu.y).toUShort()
-    return location
+    val location = (256u * zeroPageValueMsb + zeroPageValueLsb + cpu.y)
+    return location.toInt()
 }
-fun indexedIndirectX(cpu: CentralProcessingUnit, memory: Array<UByte>, param: UByte): UShort {
+fun indexedIndirectX(cpu: CentralProcessingUnit, memory: Array<UByte>, param: UByte): Int {
     val location1 = (param + cpu.x).toUByte()
     val zeroPageValueLsb = memory[location1.toInt()]
     val zeroPageValueMsb = memory[location1.toInt().inc()]
-    val location2 = (256u * zeroPageValueMsb.toUShort() + zeroPageValueLsb.toUShort()).toUShort()
-    return location2
+    val location2 = (256u * zeroPageValueMsb.toUShort() + zeroPageValueLsb.toUShort())
+    return location2.toInt()
 }
 
 fun main() {
@@ -81,7 +81,13 @@ class CentralProcessingUnit {
             val operand1 = memory[pc.inc().toInt()]
             val operand2 = memory[pc.inc().inc().toInt()]
             when (opCode.toInt()) {
+                0x06 -> { AslOperation().aslZeroPage(this, memory, operand1) }
+                0x0A -> { AslOperation().aslImmediate(this) }
+                0x0E -> { AslOperation().aslAbsolute(this, memory, operand1, operand2) }
+
                 0x10 -> { bpl(operand1) }
+                0x16 -> { AslOperation().aslZeroPageX(this, memory, operand1) }
+                0x1E -> { AslOperation().aslAbsoluteX(this, memory, operand1, operand2) }
 
                 0x21 -> { AndOperation().andIndexedIndirectX(this, memory, operand1) }
                 0x25 -> { AndOperation().andZeroPage(this, memory, operand1) }

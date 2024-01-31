@@ -20,7 +20,7 @@ class AndOperation {
         println("AND \$$operand")
 
         val location = zeroPage(param)
-        val memoryValue = memory[location.toInt()]
+        val memoryValue = memory[location]
         cpu.acc = cpu.acc and memoryValue
         cpu.Z = (cpu.acc == 0.toUByte())
         cpu.N = (cpu.acc and 128u > 0u)
@@ -33,7 +33,7 @@ class AndOperation {
         println("AND \$$operand, X")
 
         val location = zeroPageX(cpu, param)
-        val memoryValue = memory[location.toInt()]
+        val memoryValue = memory[location]
         cpu.acc = cpu.acc and memoryValue
         cpu.Z = (cpu.acc == 0.toUByte())
         cpu.N = (cpu.acc and 128u > 0u)
@@ -61,7 +61,7 @@ class AndOperation {
         println("AND \$$msbHex$lsbHex, X")
 
         val location = absoluteX(cpu, lsb, msb)
-        val memoryValue = memory[location.toInt()]
+        val memoryValue = memory[location]
         cpu.acc = cpu.acc and memoryValue
         cpu.N = (cpu.x and 128u > 0u)
         cpu.Z = (cpu.x.compareTo(0u) == 0)
@@ -75,7 +75,7 @@ class AndOperation {
         println("AND \$$msbHex$lsbHex, Y")
 
         val location = absoluteY(cpu, lsb, msb)
-        val memoryValue = memory[location.toInt()]
+        val memoryValue = memory[location]
         cpu.acc = cpu.acc and memoryValue
         cpu.N = (cpu.x and 128u > 0u)
         cpu.Z = (cpu.x.compareTo(0u) == 0)
@@ -88,7 +88,7 @@ class AndOperation {
         println("AND (\$$operand, X)")
 
         val location = indexedIndirectX(cpu, memory, param)
-        val memoryValue = memory[location.toInt()]
+        val memoryValue = memory[location]
         cpu.acc = cpu.acc and memoryValue
         cpu.Z = (cpu.acc == 0.toUByte())
         cpu.N = (cpu.acc and 128u > 0u)
@@ -101,7 +101,7 @@ class AndOperation {
         println("AND (\$$operand), Y")
 
         val location = indirectIndexedY(cpu, memory, param)
-        val memoryValue = memory[location.toInt()]
+        val memoryValue = memory[location]
         cpu.acc = cpu.acc and memoryValue
         cpu.Z = (cpu.acc == 0.toUByte())
         cpu.N = (cpu.acc and 128u > 0u)
