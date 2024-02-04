@@ -81,75 +81,75 @@ class CentralProcessingUnit {
             val operand1 = memory[pc.inc().toInt()]
             val operand2 = memory[pc.inc().inc().toInt()]
             when (opCode.toInt()) {
-                0x06 -> { AslOperation().aslZeroPage(this, memory, operand1) }
-                0x0A -> { AslOperation().aslImmediate(this) }
-                0x0E -> { AslOperation().aslAbsolute(this, memory, operand1, operand2) }
+                0x06 -> { OLD_AslOperation().aslZeroPage(this, memory, operand1) }
+                0x0A -> { OLD_AslOperation().aslImmediate(this) }
+                0x0E -> { OLD_AslOperation().aslAbsolute(this, memory, operand1, operand2) }
 
                 0x10 -> { bpl(operand1) }
-                0x16 -> { AslOperation().aslZeroPageX(this, memory, operand1) }
-                0x1E -> { AslOperation().aslAbsoluteX(this, memory, operand1, operand2) }
+                0x16 -> { OLD_AslOperation().aslZeroPageX(this, memory, operand1) }
+                0x1E -> { OLD_AslOperation().aslAbsoluteX(this, memory, operand1, operand2) }
 
-                0x21 -> { AndOperation().andIndexedIndirectX(this, memory, operand1) }
-                0x25 -> { AndOperation().andZeroPage(this, memory, operand1) }
-                0x29 -> { AndOperation().andImmediate(this, operand1) }
-                0x2D -> { AndOperation().andAbsolute(this, memory, operand1, operand2) }
+                0x21 -> { OLD_AndOperation().andIndexedIndirectX(this, memory, operand1) }
+                0x25 -> { OLD_AndOperation().andZeroPage(this, memory, operand1) }
+                0x29 -> { OLD_AndOperation().andImmediate(this, operand1) }
+                0x2D -> { OLD_AndOperation().andAbsolute(this, memory, operand1, operand2) }
 
-                0x31 -> { AndOperation().andIndirectIndexedY(this, memory, operand1) }
-                0x35 -> { AndOperation().andZeroPageX(this, memory, operand1) }
-                0x39 -> { AndOperation().andAbsoluteY(this, memory, operand1, operand2) }
-                0x3D -> { AndOperation().andAbsoluteX(this, memory, operand1, operand2) }
+                0x31 -> { OLD_AndOperation().andIndirectIndexedY(this, memory, operand1) }
+                0x35 -> { OLD_AndOperation().andZeroPageX(this, memory, operand1) }
+                0x39 -> { OLD_AndOperation().andAbsoluteY(this, memory, operand1, operand2) }
+                0x3D -> { OLD_AndOperation().andAbsoluteX(this, memory, operand1, operand2) }
 
-                0x61 -> { AddWithCarry().adcIndexedIndirectX(this, memory, operand1) }
-                0x65 -> { AddWithCarry().adcZeroPage(this, memory, operand1) }
-                0x69 -> { AddWithCarry().adcImmediate(this, operand1) }
-                0x6D -> { AddWithCarry().adcAbsolute(this, memory, operand1, operand2) }
+                0x61 -> { OLD_AddWithCarry().adcIndexedIndirectX(this, memory, operand1) }
+                0x65 -> { OLD_AddWithCarry().adcZeroPage(this, memory, operand1) }
+                0x69 -> { OLD_AddWithCarry().adcImmediate(this, operand1) }
+                0x6D -> { OLD_AddWithCarry().adcAbsolute(this, memory, operand1, operand2) }
 
-                0x71 -> { AddWithCarry().adcIndirectIndexedY(this, memory, operand1) }
-                0x75 -> { AddWithCarry().adcZeroPageX(this, memory, operand1) }
-                0x79 -> { AddWithCarry().adcAbsoluteY(this, memory, operand1, operand2) }
-                0x7D -> { AddWithCarry().adcAbsoluteX(this, memory, operand1, operand2) }
+                0x71 -> { OLD_AddWithCarry().adcIndirectIndexedY(this, memory, operand1) }
+                0x75 -> { OLD_AddWithCarry().adcZeroPageX(this, memory, operand1) }
+                0x79 -> { OLD_AddWithCarry().adcAbsoluteY(this, memory, operand1, operand2) }
+                0x7D -> { OLD_AddWithCarry().adcAbsoluteX(this, memory, operand1, operand2) }
 
-                0x81 -> { LoadStoreAccumulator().staIndexedIndirectX(this, memory, operand1) }
-                0x85 -> { LoadStoreAccumulator().staZeroPage(this, memory, operand1) }
-                0x84 -> { LoadStoreYRegister().styZeroPage(this, memory, operand1) }
-                0x86 -> { LoadStoreXRegister().stxZeroPage(this, memory, operand1) }
+                0x81 -> { OLD_LoadStoreAccumulator().staIndexedIndirectX(this, memory, operand1) }
+                0x85 -> { OLD_LoadStoreAccumulator().staZeroPage(this, memory, operand1) }
+                0x84 -> { OLD_LoadStoreYRegister().styZeroPage(this, memory, operand1) }
+                0x86 -> { OLD_LoadStoreXRegister().stxZeroPage(this, memory, operand1) }
                 0x88 -> { dey() }
                 0x8A -> { TransferRegisters().txa(this) }
-                0x8C -> { LoadStoreYRegister().styAbsolute(this, memory, operand1, operand2) }
-                0x8D -> { LoadStoreAccumulator().staAbsolute(this, memory, operand1, operand2) }
-                0x8E -> { LoadStoreXRegister().stxAbsolute(this, memory, operand1, operand2) }
+                0x8C -> { OLD_LoadStoreYRegister().styAbsolute(this, memory, operand1, operand2) }
+                0x8D -> { OLD_LoadStoreAccumulator().staAbsolute(this, memory, operand1, operand2) }
+                0x8E -> { OLD_LoadStoreXRegister().stxAbsolute(this, memory, operand1, operand2) }
 
-                0x91 -> { LoadStoreAccumulator().staIndirectIndexedY(this, memory, operand1) }
-                0x94 -> { LoadStoreYRegister().styZeroPageX(this, memory, operand1) }
-                0x95 -> { LoadStoreAccumulator().staZeroPageX(this, memory, operand1) }
-                0x96 -> { LoadStoreXRegister().stxZeroPageY(this, memory, operand1) }
+                0x91 -> { OLD_LoadStoreAccumulator().staIndirectIndexedY(this, memory, operand1) }
+                0x94 -> { OLD_LoadStoreYRegister().styZeroPageX(this, memory, operand1) }
+                0x95 -> { OLD_LoadStoreAccumulator().staZeroPageX(this, memory, operand1) }
+                0x96 -> { OLD_LoadStoreXRegister().stxZeroPageY(this, memory, operand1) }
                 0x98 -> { TransferRegisters().tya(this) }
-                0x99 -> { LoadStoreAccumulator().staAbsoluteY(this, memory, operand1, operand2) }
+                0x99 -> { OLD_LoadStoreAccumulator().staAbsoluteY(this, memory, operand1, operand2) }
                 0x9A -> { TransferRegisters().txs(this) }
-                0x9D -> { LoadStoreAccumulator().staAbsoluteX(this, memory, operand1, operand2) }
+                0x9D -> { OLD_LoadStoreAccumulator().staAbsoluteX(this, memory, operand1, operand2) }
 
-                0xA0 -> { LoadStoreYRegister().ldyImmediate(this, operand1) }
-                0xA1 -> { LoadStoreAccumulator().ldaIndexedIndirectX(this, memory, operand1) }
-                0xA2 -> { LoadStoreXRegister().ldxImmediate(this, operand1) }
-                0xA4 -> { LoadStoreYRegister().ldyZeroPage(this, memory, operand1) }
-                0xA5 -> { LoadStoreAccumulator().ldaZeroPage(this, memory, operand1) }
-                0xA6 -> { LoadStoreXRegister().ldxZeroPage(this, memory, operand1) }
+                0xA0 -> { OLD_LoadStoreYRegister().ldyImmediate(this, operand1) }
+                0xA1 -> { OLD_LoadStoreAccumulator().ldaIndexedIndirectX(this, memory, operand1) }
+                0xA2 -> { OLD_LoadStoreXRegister().ldxImmediate(this, operand1) }
+                0xA4 -> { OLD_LoadStoreYRegister().ldyZeroPage(this, memory, operand1) }
+                0xA5 -> { OLD_LoadStoreAccumulator().ldaZeroPage(this, memory, operand1) }
+                0xA6 -> { OLD_LoadStoreXRegister().ldxZeroPage(this, memory, operand1) }
                 0xA8 -> { TransferRegisters().tay(this) }
-                0xA9 -> { LoadStoreAccumulator().ldaImmediate(this, operand1) }
+                0xA9 -> { OLD_LoadStoreAccumulator().ldaImmediate(this, operand1) }
                 0xAA -> { TransferRegisters().tax(this) }
-                0xAC -> { LoadStoreYRegister().ldyAbsolute(this, memory, operand1, operand2) }
-                0xAD -> { LoadStoreAccumulator().ldaAbsolute(this, memory, operand1, operand2) }
-                0xAE -> { LoadStoreXRegister().ldxAbsolute(this, memory, operand1, operand2) }
+                0xAC -> { OLD_LoadStoreYRegister().ldyAbsolute(this, memory, operand1, operand2) }
+                0xAD -> { OLD_LoadStoreAccumulator().ldaAbsolute(this, memory, operand1, operand2) }
+                0xAE -> { OLD_LoadStoreXRegister().ldxAbsolute(this, memory, operand1, operand2) }
 
-                0xB1 -> { LoadStoreAccumulator().ldaIndirectIndexedY(this, memory, operand1) }
-                0xB4 -> { LoadStoreYRegister().ldyZeroPageX(this, memory, operand1) }
-                0xB5 -> { LoadStoreAccumulator().ldaZeroPageX(this, memory, operand1) }
-                0xB6 -> { LoadStoreXRegister().ldxZeroPageY(this, memory, operand1) }
-                0xB9 -> { LoadStoreAccumulator().ldaAbsoluteY(this, memory, operand1, operand2) }
+                0xB1 -> { OLD_LoadStoreAccumulator().ldaIndirectIndexedY(this, memory, operand1) }
+                0xB4 -> { OLD_LoadStoreYRegister().ldyZeroPageX(this, memory, operand1) }
+                0xB5 -> { OLD_LoadStoreAccumulator().ldaZeroPageX(this, memory, operand1) }
+                0xB6 -> { OLD_LoadStoreXRegister().ldxZeroPageY(this, memory, operand1) }
+                0xB9 -> { OLD_LoadStoreAccumulator().ldaAbsoluteY(this, memory, operand1, operand2) }
                 0xBA -> { TransferRegisters().tsx(this) }
-                0xBC -> { LoadStoreYRegister().ldyAbsoluteX(this, memory, operand1, operand2) }
-                0xBD -> { LoadStoreAccumulator().ldaAbsoluteX(this, memory, operand1, operand2) }
-                0xBE -> { LoadStoreXRegister().ldxAbsoluteY(this, memory, operand1, operand2) }
+                0xBC -> { OLD_LoadStoreYRegister().ldyAbsoluteX(this, memory, operand1, operand2) }
+                0xBD -> { OLD_LoadStoreAccumulator().ldaAbsoluteX(this, memory, operand1, operand2) }
+                0xBE -> { OLD_LoadStoreXRegister().ldxAbsoluteY(this, memory, operand1, operand2) }
 
                 else -> { println("Not yet implemented, or not an existing OPCode!")}
             }
