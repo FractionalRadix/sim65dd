@@ -1,5 +1,6 @@
 package com.cormontia.sim65dd
 
+import com.cormontia.sim65dd.old_operations.*
 import java.util.*
 import kotlin.reflect.KFunction1
 

@@ -1,5 +1,6 @@
-package com.cormontia.sim65dd
+package com.cormontia.sim65dd.old_operations
 
+import com.cormontia.sim65dd.*
 import java.util.*
 
 class OLD_LoadStoreYRegister {
