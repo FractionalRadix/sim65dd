@@ -1,12 +1,13 @@
 package com.cormontia.sim65dd
 
+import com.cormontia.sim65dd.memory.Memory
 import java.util.*
 
 /**
  * Alternative implementation of the Add With Carry (ADC) operations.
  * This uses the Memory interface, instead of sending an Array<UByte>.
  */
-class AlternatieveAddWithCarry {
+class AlternativeAddWithCarry {
     private data class AdditionResult(
         val sumValue: UByte,
         val carry: Boolean,

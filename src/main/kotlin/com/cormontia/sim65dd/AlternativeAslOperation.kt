@@ -1,5 +1,6 @@
 package com.cormontia.sim65dd
 
+import com.cormontia.sim65dd.memory.Memory
 import java.util.*
 
 class AlternativeAslOperation {
