@@ -13,6 +13,8 @@ interface Memory {
         val resultingLocation = (256u * zeroPageValueMsb + zeroPageValueLsb + cpu.y)
         return resultingLocation.toUShort()
     }
+
+    //TODO?~  It's possible that this one should use an 8-bit address, while Indirect Indexed should not.
     fun indexedIndirectX(cpu: CentralProcessingUnit, location: UByte): UShort {
         val location1 = (location + cpu.x).toUByte()
         val zeroPageValueLsb = this.getZeroPage(location1)
