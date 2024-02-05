@@ -93,18 +93,6 @@ class MemoryAsArray: Memory {
         array[address.toInt()] = value
     }
 
-    //TODO!-
-    fun toMemoryAsMutableMap(): MemoryAsMutableMap {
-        val memoryAsMutableMap = MemoryAsMutableMap()
-        for (i in array.indices) {
-            //TODO?- Maybe the condition should be removed, it is based upon the assumption that a non-defined entry will always be treated as 0.
-            if (array[i] != 0.toUByte()) {
-                memoryAsMutableMap[i.toUShort()] = array[i]
-            }
-        }
-        return memoryAsMutableMap
-    }
-
     override operator fun get(location: UShort): UByte {
         return array[location.toInt()]
     }
