@@ -5,6 +5,7 @@ import java.util.*
 import kotlin.reflect.KFunction1
 
 //TODO?~ Should these methods return Int, as apparently our memory array requires Int instead of short for addressing...?
+//TODO!- These methods will be removed once we use the `Memory` interface everywhere.
 fun absolute(lsb: UByte, msb: UByte) = (256 * msb.toShort() + lsb.toShort()) % 65536
 fun absoluteX(cpu: CentralProcessingUnit, lsb: UByte, msb: UByte) = (256 * msb.toShort() + lsb.toShort() + cpu.x.toShort()) % 65536
 fun absoluteY(cpu: CentralProcessingUnit, lsb: UByte, msb: UByte) = (256 * msb.toShort() + lsb.toShort() + cpu.y.toShort()) % 65535
