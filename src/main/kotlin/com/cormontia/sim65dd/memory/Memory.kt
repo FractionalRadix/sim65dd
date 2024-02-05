@@ -29,11 +29,11 @@ interface Memory {
     //TODO?~ Copy constructor?
     fun copy(target: Memory) {
         for (i in 0..0xFFFF) {
-            target.set(i.toUShort(), get(i.toUShort()))
+            target[i.toUShort()] = this[i.toUShort()]
         }
     }
-    fun set(location: UShort, value: UByte)
-    fun get(location: UShort): UByte
+    operator fun set(location: UShort, value: UByte)
+    operator fun get(location: UShort): UByte
 
 
     fun getAbsolute(lsb: UByte, msb: UByte): UByte

@@ -93,6 +93,7 @@ class MemoryAsArray: Memory {
         array[address.toInt()] = value
     }
 
+    //TODO!-
     fun toMemoryAsMutableMap(): MemoryAsMutableMap {
         val memoryAsMutableMap = MemoryAsMutableMap()
         for (i in array.indices) {
@@ -104,8 +105,12 @@ class MemoryAsArray: Memory {
         return memoryAsMutableMap
     }
 
-    operator fun set(index: UShort, value: UByte) {
-        array[index.toInt()] = value
+    override operator fun get(location: UShort): UByte {
+        return array[location.toInt()]
+    }
+
+    override operator fun set(location: UShort, value: UByte) {
+        array[location.toInt()] = value
     }
 
 }

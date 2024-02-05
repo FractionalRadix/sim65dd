@@ -72,16 +72,12 @@ class MemoryAsMutableMap: Memory {
         TODO("Not yet implemented")
     }
 
-    fun toMemoryAsArray(): MemoryAsArray {
-        val memoryAsArray = MemoryAsArray()
-        map.forEach {
-            memoryAsArray[it.key] = it.value
-        }
-        return memoryAsArray
+    override operator fun get(location: UShort): UByte {
+        return map.getOrDefault(location, 0u)
     }
 
-    operator fun set(index: UShort, value: UByte) {
-        map[index] = value
+    override operator fun set(location: UShort, value: UByte) {
+        map[location] = value
     }
 
 }

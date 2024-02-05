@@ -1,7 +1,7 @@
 package com.cormontia.sim65dd
 
 import com.cormontia.sim65dd.memory.Memory
-import com.cormontia.sim65dd.old_operations.*
+import com.cormontia.sim65dd.memory.MemoryAsArray
 import java.util.*
 import kotlin.reflect.KFunction1
 
@@ -45,18 +45,18 @@ fun main() {
  */
 
 fun program(): Memory {
-    val array = Array<UByte>(65536) { 0u }
+    val array = MemoryAsArray()
 
-    array[0] = 0xA9.toUByte()
-    array[1] = 0xFF.toUByte()
-    array[2] = 0xA0.toUByte()
-    array[3] = 0x09.toUByte()
-    array[4] = 0x99.toUByte()
-    array[5] = 0x00.toUByte()
-    array[6] = 0x10.toUByte()
-    array[7] = 0x88.toUByte()
-    array[8] = 0x10.toUByte()
-    array[9] = 0xFA.toUByte() // -4 . Need to go to step 4. Question is: WHEN is the IP increased?
+    array[0u] = 0xA9.toUByte()
+    array[1u] = 0xFF.toUByte()
+    array[2u] = 0xA0.toUByte()
+    array[3u] = 0x09.toUByte()
+    array[4u] = 0x99.toUByte()
+    array[5u] = 0x00.toUByte()
+    array[6u] = 0x10.toUByte()
+    array[7u] = 0x88.toUByte()
+    array[8u] = 0x10.toUByte()
+    array[9u] = 0xFA.toUByte() // -4 . Need to go to step 4. Question is: WHEN is the IP increased?
     return array
 }
 
