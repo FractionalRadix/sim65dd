@@ -23,6 +23,7 @@ class MemoryAsMutableMap: Memory {
         val location = getterFunction(cpu, zeroPageLocation)
         return map.getOrPut(location.toUShort()) { 0u }
     }
+
     private fun setter8bit(
         cpu: CentralProcessingUnit,
         zeroPageLocation: UByte,
@@ -31,6 +32,7 @@ class MemoryAsMutableMap: Memory {
         val location = setterFunction(cpu, zeroPageLocation)
         map[location.toUShort()] = value
     }
+
     private fun getter16bit(
         cpu: CentralProcessingUnit,
         lsb: UByte,
@@ -40,6 +42,7 @@ class MemoryAsMutableMap: Memory {
         val location = locationCalculator(cpu, lsb, msb)
         return map.getOrPut(location) { 0u }
     }
+
     private fun setter16bit(
         cpu: CentralProcessingUnit,
         lsb: UByte,
@@ -51,7 +54,7 @@ class MemoryAsMutableMap: Memory {
         map[location] = value
     }
 
-    // interface implementation.
+    // Interface implementation.
 
     override fun getAbsolute(lsb: UByte, msb: UByte): UByte {
         val location = absolute(lsb, msb)
