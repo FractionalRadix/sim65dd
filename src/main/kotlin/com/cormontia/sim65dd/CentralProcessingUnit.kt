@@ -34,7 +34,9 @@ fun program(): Memory {
     array[6u] = 0x10.toUByte()
     array[7u] = 0x88.toUByte()
     array[8u] = 0x10.toUByte()
-    array[9u] = 0xFA.toUByte() // -4 . Need to go to step 4. Question is: WHEN is the IP increased?
+    //TODO?~ Seems it SHOULD be 0xFA, but it works using 0xFB. Which one is correct?
+    //array[9u] = 0xFA.toUByte() // -4 . Need to go to step 4. Question is: WHEN is the IP increased?
+    array[9u] = 0xFB.toUByte() // -4 . Need to go to step 4. Question is: WHEN is the IP increased?
     return array
 }
 
@@ -56,11 +58,16 @@ class CentralProcessingUnit {
 
         this.pc = startIp
 
-        var opCode = memory.get(pc)
+        var opCode = memory[pc]
         while (opCode != 0.toUByte() /* //TODO!~ */ ) {
-            opCode = memory.get(pc)
-            val operand1 = memory.get(pc.inc())
-            val operand2 = memory.get(pc.inc().inc())
+            opCode = memory[pc]
+
+            // Prefix instruction with the value of the Program Counter.
+            val pcStr = String.format("%04X", pc.toInt())
+            print("[$pcStr] ")
+
+            val operand1 = memory[pc.inc()]
+            val operand2 = memory[pc.inc().inc()]
             when (opCode.toInt()) {
                 0x06 -> { AslOperation().aslZeroPage(this, memory, operand1) }
                 0x0A -> { AslOperation().aslImmediate(this) }
@@ -150,11 +157,20 @@ class CentralProcessingUnit {
 
         pc = pc.inc() // Now points at the instruction.
 
-        //TODO!~ There has to be a better way to add a two's complement to a UByte...
-        var counter = param
-        while (counter > 0u) {
-            pc = pc.inc()
-            counter--
+        if (!N) {
+
+            if (param < 128u) {
+                val offset = param.toUShort()
+                val newAddress = pc + offset
+                pc = newAddress.toUShort()
+            } else {
+                //TODO!+
+                val biggerTwosComplement = param.toUShort() + 0xFF00.toUShort() // Note that it won't exceed 0xFFFF
+                val newAddress = pc + biggerTwosComplement
+                pc = newAddress.toUShort()
+            }
+        } else {
+            pc = pc.inc() // Is a single "inc()" enough...?!? That might imply a bug!
         }
     }
 
