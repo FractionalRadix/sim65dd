@@ -2,12 +2,13 @@ package com.cormontia.sim65dd
 
 import com.cormontia.sim65dd.memory.Memory
 import com.cormontia.sim65dd.memory.MemoryAsArray
+import com.cormontia.sim65dd.memory.MemoryAsMutableMap
 import java.util.*
 import kotlin.reflect.KFunction1
 
 fun main() {
     val cpu = CentralProcessingUnit()
-    val memory = program()
+    val memory = program1()
     cpu.mainLoop(memory, 0.toUShort())
 }
 
@@ -22,7 +23,7 @@ fun main() {
    BPL loop
  */
 
-fun program(): Memory {
+fun program1(): Memory {
     val array = MemoryAsArray()
 
     array[0u] = 0xA9.toUByte()
@@ -38,6 +39,31 @@ fun program(): Memory {
     //array[9u] = 0xFA.toUByte() // -4 . Need to go to step 4. Question is: WHEN is the IP increased?
     array[9u] = 0xFB.toUByte() // -4 . Need to go to step 4. Question is: WHEN is the IP increased?
     return array
+}
+
+@OptIn(ExperimentalUnsignedTypes::class)
+fun program2(): Memory {
+    // Source: Duck.ai
+
+    val instructions = ubyteArrayOf(
+        0xA2u, 0x00u,        // LDX #$00
+        0xE8u,               // INX
+        0x10u, 0x03u,        // BPL +3 (branch if positive, 3 bytes ahead)
+        0xA9u, 0xFFu,        // LDA #$FF
+        0x8Du, 0x00u, 0x00u, // STA $00
+        0x4Cu, 0xFFu, 0xFFu, // JMP $FF
+        0xEAu,               // NOP (this is just a placeholder for the skipped instruction)
+        0xA9u, 0x00u,        // LDA #$00
+        0x8Du, 0x01u, 0x00u, // STA $01
+    )
+
+    val memory = MemoryAsMutableMap()
+    for (instr in instructions.withIndex()) {
+        val idx = (instr.index.toUShort() + 256u).toUShort()
+        memory[idx] = instr.value
+    }
+
+    return memory
 }
 
 
@@ -73,7 +99,7 @@ class CentralProcessingUnit {
                 0x0A -> { AslOperation().aslImmediate(this) }
                 0x0E -> { AslOperation().aslAbsolute(this, memory, operand1, operand2) }
 
-                0x10 -> { bpl(operand1) }
+                0x10 -> { BranchOperation().bpl(this, operand1) }
                 0x16 -> { AslOperation().aslZeroPageX(this, memory, operand1) }
                 0x1E -> { AslOperation().aslAbsoluteX(this, memory, operand1, operand2) }
 
@@ -82,16 +108,20 @@ class CentralProcessingUnit {
                 0x29 -> { AndOperation().andImmediate(this, operand1) }
                 0x2D -> { AndOperation().andAbsolute(this, memory, operand1, operand2) }
 
+                0x30 -> { BranchOperation().bmi(this, operand1) }
                 0x31 -> { AndOperation().andIndirectIndexedY(this, memory, operand1) }
                 0x35 -> { AndOperation().andZeroPageX(this, memory, operand1) }
                 0x39 -> { AndOperation().andAbsoluteY(this, memory, operand1, operand2) }
                 0x3D -> { AndOperation().andAbsoluteX(this, memory, operand1, operand2) }
+
+                0x50 -> { BranchOperation().bvc(this, operand1) }
 
                 0x61 -> { AddWithCarry().adcIndexedIndirectX(this, memory, operand1) }
                 0x65 -> { AddWithCarry().adcZeroPage(this, memory, operand1) }
                 0x69 -> { AddWithCarry().adcImmediate(this, operand1) }
                 0x6D -> { AddWithCarry().adcAbsolute(this, memory, operand1, operand2) }
 
+                0x70 -> { BranchOperation().bvs(this, operand1) }
                 0x71 -> { AddWithCarry().adcIndirectIndexedY(this, memory, operand1) }
                 0x75 -> { AddWithCarry().adcZeroPageX(this, memory, operand1) }
                 0x79 -> { AddWithCarry().adcAbsoluteY(this, memory, operand1, operand2) }
@@ -107,6 +137,7 @@ class CentralProcessingUnit {
                 0x8D -> { LoadStoreAccumulator().staAbsolute(this, memory, operand1, operand2) }
                 0x8E -> { LoadStoreXRegister().stxAbsolute(this, memory, operand1, operand2) }
 
+                0x90 -> { BranchOperation().bcc(this, operand1) }
                 0x91 -> { LoadStoreAccumulator().staIndirectIndexedY(this, memory, operand1) }
                 0x94 -> { LoadStoreYRegister().styZeroPageX(this, memory, operand1) }
                 0x95 -> { LoadStoreAccumulator().staZeroPageX(this, memory, operand1) }
@@ -129,6 +160,7 @@ class CentralProcessingUnit {
                 0xAD -> { LoadStoreAccumulator().ldaAbsolute(this, memory, operand1, operand2) }
                 0xAE -> { LoadStoreXRegister().ldxAbsolute(this, memory, operand1, operand2) }
 
+                0xB0 -> { BranchOperation().bcs(this, operand1) }
                 0xB1 -> { LoadStoreAccumulator().ldaIndirectIndexedY(this, memory, operand1) }
                 0xB4 -> { LoadStoreYRegister().ldyZeroPageX(this, memory, operand1) }
                 0xB5 -> { LoadStoreAccumulator().ldaZeroPageX(this, memory, operand1) }
@@ -139,6 +171,10 @@ class CentralProcessingUnit {
                 0xBD -> { LoadStoreAccumulator().ldaAbsoluteX(this, memory, operand1, operand2) }
                 0xBE -> { LoadStoreXRegister().ldxAbsoluteY(this, memory, operand1, operand2) }
 
+                0xD0 -> { BranchOperation().bne(this, operand1) }
+
+                0xF0 -> { BranchOperation().beq(this, operand1) }
+
                 else -> { println("Not yet implemented, or not an existing OPCode!")}
             }
         }
@@ -147,30 +183,6 @@ class CentralProcessingUnit {
             if (memory[i.toUShort()] == 255.toUByte()) {
                 print(" $i")
             }
-        }
-
-    }
-
-    private fun bpl(param: UByte) {
-        val operand = param.toString(16).uppercase(Locale.getDefault()).padStart(2, '0')
-        println("BPL $operand")
-
-        pc = pc.inc() // Now points at the instruction.
-
-        if (!N) {
-
-            if (param < 128u) {
-                val offset = param.toUShort()
-                val newAddress = pc + offset
-                pc = newAddress.toUShort()
-            } else {
-                //TODO!+
-                val biggerTwosComplement = param.toUShort() + 0xFF00.toUShort() // Note that it won't exceed 0xFFFF
-                val newAddress = pc + biggerTwosComplement
-                pc = newAddress.toUShort()
-            }
-        } else {
-            pc = pc.inc() // Is a single "inc()" enough...?!? That might imply a bug!
         }
     }
 
