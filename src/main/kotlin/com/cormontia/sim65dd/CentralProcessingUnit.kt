@@ -3,14 +3,22 @@ package com.cormontia.sim65dd
 import com.cormontia.sim65dd.memory.Memory
 import com.cormontia.sim65dd.memory.MemoryAsArray
 import com.cormontia.sim65dd.memory.MemoryAsMutableMap
-import java.util.*
 import kotlin.reflect.KFunction1
 
 fun main() {
     val cpu = CentralProcessingUnit()
-    val memory = program1()
-    cpu.mainLoop(memory, 0.toUShort())
+
+    println("Starting test program #1.")
+    val memory1 = program1()
+    cpu.mainLoop(memory1, 0.toUShort()) { processor -> processor.y == 0xFF.toUByte() }
+
+    println("Starting test program #2.")
+    val memory2 = program2()
+    var counter = 0
+    cpu.mainLoop(memory2, 0x0100.toUShort()) { counter++; counter >= 20 }
 }
+
+fun yRegisterIsZero(cpu: CentralProcessingUnit) = cpu.y == 0.toUByte()
 
 /*
     From http://www.emulator101.com/6502-addressing-modes.html :
@@ -80,13 +88,13 @@ class CentralProcessingUnit {
     var V: Boolean = false
 
 
-    fun mainLoop(memory: Memory, startIp: UShort) {
+    //TODO?+ Add a termination condition?
+    fun mainLoop(memory: Memory, startIp: UShort, terminationCondition: (cpu: CentralProcessingUnit) -> Boolean) {
 
         this.pc = startIp
 
-        var opCode = memory[pc]
-        while (opCode != 0.toUByte() /* //TODO!~ */ ) {
-            opCode = memory[pc]
+        while (!terminationCondition(this)) {
+            val opCode = memory[pc]
 
             // Prefix instruction with the value of the Program Counter.
             val pcStr = String.format("%04X", pc.toInt())
@@ -184,6 +192,8 @@ class CentralProcessingUnit {
                 print(" $i")
             }
         }
+
+        println()
     }
 
     private fun dex() {
