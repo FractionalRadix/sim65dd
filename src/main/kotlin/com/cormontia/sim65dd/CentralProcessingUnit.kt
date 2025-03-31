@@ -15,10 +15,9 @@ fun main() {
     println("Starting test program #2.")
     val memory2 = program2()
     var counter = 0
-    cpu.mainLoop(memory2, 0x0100.toUShort()) { counter++; counter >= 20 }
+    cpu.mainLoop(memory2, 0x0100.toUShort()) { counter++; counter >= 6 }
 }
 
-fun yRegisterIsZero(cpu: CentralProcessingUnit) = cpu.y == 0.toUByte()
 
 /*
     From http://www.emulator101.com/6502-addressing-modes.html :
@@ -139,8 +138,8 @@ class CentralProcessingUnit {
                 0x85 -> { LoadStoreAccumulator().staZeroPage(this, memory, operand1) }
                 0x84 -> { LoadStoreYRegister().styZeroPage(this, memory, operand1) }
                 0x86 -> { LoadStoreXRegister().stxZeroPage(this, memory, operand1) }
-                0x88 -> { dey() }
-                0x8A -> { TransferRegisters().txa(this) }
+                0x88 -> { RegisterInstructions().dey(this) }
+                0x8A -> { RegisterInstructions().txa(this) }
                 0x8C -> { LoadStoreYRegister().styAbsolute(this, memory, operand1, operand2) }
                 0x8D -> { LoadStoreAccumulator().staAbsolute(this, memory, operand1, operand2) }
                 0x8E -> { LoadStoreXRegister().stxAbsolute(this, memory, operand1, operand2) }
@@ -150,9 +149,9 @@ class CentralProcessingUnit {
                 0x94 -> { LoadStoreYRegister().styZeroPageX(this, memory, operand1) }
                 0x95 -> { LoadStoreAccumulator().staZeroPageX(this, memory, operand1) }
                 0x96 -> { LoadStoreXRegister().stxZeroPageY(this, memory, operand1) }
-                0x98 -> { TransferRegisters().tya(this) }
+                0x98 -> { RegisterInstructions().tya(this) }
                 0x99 -> { LoadStoreAccumulator().staAbsoluteY(this, memory, operand1, operand2) }
-                0x9A -> { TransferRegisters().txs(this) }
+                0x9A -> { StackInstructions().txs(this) }
                 0x9D -> { LoadStoreAccumulator().staAbsoluteX(this, memory, operand1, operand2) }
 
                 0xA0 -> { LoadStoreYRegister().ldyImmediate(this, operand1) }
@@ -161,9 +160,9 @@ class CentralProcessingUnit {
                 0xA4 -> { LoadStoreYRegister().ldyZeroPage(this, memory, operand1) }
                 0xA5 -> { LoadStoreAccumulator().ldaZeroPage(this, memory, operand1) }
                 0xA6 -> { LoadStoreXRegister().ldxZeroPage(this, memory, operand1) }
-                0xA8 -> { TransferRegisters().tay(this) }
+                0xA8 -> { RegisterInstructions().tay(this) }
                 0xA9 -> { LoadStoreAccumulator().ldaImmediate(this, operand1) }
-                0xAA -> { TransferRegisters().tax(this) }
+                0xAA -> { RegisterInstructions().tax(this) }
                 0xAC -> { LoadStoreYRegister().ldyAbsolute(this, memory, operand1, operand2) }
                 0xAD -> { LoadStoreAccumulator().ldaAbsolute(this, memory, operand1, operand2) }
                 0xAE -> { LoadStoreXRegister().ldxAbsolute(this, memory, operand1, operand2) }
@@ -174,12 +173,17 @@ class CentralProcessingUnit {
                 0xB5 -> { LoadStoreAccumulator().ldaZeroPageX(this, memory, operand1) }
                 0xB6 -> { LoadStoreXRegister().ldxZeroPageY(this, memory, operand1) }
                 0xB9 -> { LoadStoreAccumulator().ldaAbsoluteY(this, memory, operand1, operand2) }
-                0xBA -> { TransferRegisters().tsx(this) }
+                0xBA -> { StackInstructions().tsx(this) }
                 0xBC -> { LoadStoreYRegister().ldyAbsoluteX(this, memory, operand1, operand2) }
                 0xBD -> { LoadStoreAccumulator().ldaAbsoluteX(this, memory, operand1, operand2) }
                 0xBE -> { LoadStoreXRegister().ldxAbsoluteY(this, memory, operand1, operand2) }
 
+                0xC8 -> { RegisterInstructions().iny(this) }
+                0xCA -> { RegisterInstructions().dex(this) }
+
                 0xD0 -> { BranchOperation().bne(this, operand1) }
+
+                0xE8 -> { RegisterInstructions().inx(this) }
 
                 0xF0 -> { BranchOperation().beq(this, operand1) }
 
@@ -195,53 +199,6 @@ class CentralProcessingUnit {
 
         println()
     }
-
-    private fun dex() {
-        println("DEX")
-
-        x = x.dec()
-        N = (x and 128u > 0u)
-        Z = (x.compareTo(0u) == 0)
-        pc = pc.inc()
-    }
-
-    private fun inx() {
-        println("INX")
-
-        x = x.inc()
-        N = (x and 128u > 0u)
-        Z = (x.compareTo(0u) == 0)
-        pc = pc.inc()
-    }
-
-    private fun dey() {
-        println("DEY")
-
-        y = y.dec()
-        N = (y and 128u > 0u)
-        Z = (y.compareTo(0u) == 0)
-        pc = pc.inc()
-    }
-
-    private fun iny() {
-        println("INY")
-
-        y = y.inc()
-        N = (y and 128u > 0u)
-        Z = (y.compareTo(0u) == 0)
-        pc = pc.inc()
-    }
-
-
-    //TODO?~ Use a Map from OPCodes to Instruction?
-    fun instructionSet(): List<Instruction> {
-        val instructionSet = mutableListOf<Instruction>()
-        //instructionSet.add(Instruction(0xA9.toUByte(), "LDA", ::lda_immediate, 2, false))
-        //instructionSet.add(Instruction(0xA0.toUByte(), "LDY", ::ldy_immediate, 2, false))
-        //TODO!+ val iny = Instruction(0xC8.toUByte(), "INY", ::iny) ... etc
-        return instructionSet
-    }
-
 }
 
 //TODO?~
